@@ -40,7 +40,7 @@ type authConfig struct {
 	iss         string
 }
 
-func (a *application) createMultiplexer() http.Handler {
+func (a *application) createRouter() http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
@@ -67,7 +67,7 @@ func (a *application) createMultiplexer() http.Handler {
 		})
 
 		r.Route("/quizzes", func(r chi.Router) {
-			r.Use(a.JwtTokenMiddleware)
+			//r.Use(a.JwtTokenMiddleware)
 
 			r.Get("/", a.getQuizzesHandler)
 

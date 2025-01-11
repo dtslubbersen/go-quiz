@@ -30,7 +30,13 @@ func Start() {
 	logger := zap.Must(zap.NewDevelopment()).Sugar()
 	defer logger.Sync()
 
-	store := store.NewStorage()
+	seed := store.NewSeed()
+
+	logger.Infoln("seed data extracted from disk")
+
+	store := store.NewStorage(seed)
+
+	logger.Infoln("store initialized")
 
 	app := &application{
 		authenticator: jwtAuthenticator,
@@ -44,7 +50,7 @@ func Start() {
 		return runtime.NumGoroutine()
 	}))
 
-	mux := app.createMultiplexer()
+	mux := app.createRouter()
 
 	logger.Fatal(app.run(mux))
 }

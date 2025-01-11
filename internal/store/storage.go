@@ -32,14 +32,20 @@ type Storage struct {
 	}
 }
 
-func NewStorage() Storage {
+func NewStorage(seed *Seed) Storage {
 	return Storage{
-		Questions:   &QuestionStore{},
-		Quizzes:     &QuizStore{},
-		Results:     &ResultStore{},
-		UserAnswers: &UserAnswerStore{},
+		Questions: &QuestionStore{
+			questions: seed.questions,
+		},
+		Quizzes: &QuizStore{
+			quizzes: seed.quizzes,
+		},
+		Results: &ResultStore{},
+		UserAnswers: &UserAnswerStore{
+			userAnswers: seed.userAnswers,
+		},
 		Users: &UserStore{
-			users: getSeedUsers(),
+			users: seed.users,
 		},
 	}
 }

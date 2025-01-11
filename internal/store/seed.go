@@ -1,6 +1,38 @@
 package store
 
+import (
+	"go-quiz/pkg"
+	"path/filepath"
+	"runtime"
+)
+
 const defaultPassword string = "password"
+
+type Seed struct {
+	questions   map[QuestionId]*Question
+	quizzes     map[QuizId]*Quiz
+	userAnswers map[UserAnswerId]*UserAnswer
+	users       map[UserId]*User
+}
+
+func NewSeed() *Seed {
+	questions, _ := pkg.ReadMapFromJsonFile[Question, QuestionId](getDataFilePath("questions.json"))
+	quizzes, _ := pkg.ReadMapFromJsonFile[Quiz, QuizId](getDataFilePath("quizzes.json"))
+	userAnswers, _ := pkg.ReadMapFromJsonFile[UserAnswer, UserAnswerId](getDataFilePath("user_answers.json"))
+
+	return &Seed{
+		questions:   questions,
+		quizzes:     quizzes,
+		userAnswers: userAnswers,
+		users:       getSeedUsers(),
+	}
+}
+
+func getDataFilePath(fileName string) string {
+	_, b, _, _ := runtime.Caller(0)
+	basePath := filepath.Dir(filepath.Dir(filepath.Dir(b)))
+	return filepath.Join(basePath, "data", fileName)
+}
 
 func getSeedUsers() map[UserId]*User {
 	demoUser := User{
