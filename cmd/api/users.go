@@ -10,13 +10,6 @@ type userKey string
 const userCtxKey userKey = "user"
 
 func getUserFromCtx(r *http.Request) *store.User {
-	user, exists := r.Context().Value(userCtxKey).(*store.User)
-
-	if !exists {
-		return &store.User{
-			Id: 1,
-		}
-	}
-
+	user, _ := r.Context().Value(userCtxKey).(*store.User)
 	return user
 }

@@ -9,16 +9,7 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "Declan Lubbersen",
-            "url": "https://github.com/dtslubbersen/go-quiz",
-            "email": "dtslubbersen@gmail.com"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
+        "contact": {},
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -72,6 +63,11 @@ const docTemplate = `{
         },
         "/quizzes": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Fetches a list of all quizzes from the in memory store",
                 "consumes": [
                     "application/json"
@@ -106,6 +102,11 @@ const docTemplate = `{
         },
         "/quizzes/{quizId}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Fetches a specific quiz using its ID from the in-memory store",
                 "consumes": [
                     "application/json"
@@ -150,6 +151,11 @@ const docTemplate = `{
         },
         "/quizzes/{quizId}/results": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Fetches the result of a quiz attempt by the current user.",
                 "consumes": [
                     "application/json"
@@ -194,6 +200,11 @@ const docTemplate = `{
         },
         "/quizzes/{quizId}/submit": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Allows a user to submit answers for a given quiz",
                 "consumes": [
                     "application/json"
@@ -355,25 +366,17 @@ const docTemplate = `{
                 }
             }
         }
-    },
-    "securityDefinitions": {
-        "ApiKeyAuth": {
-            "description": "Description for what is this security definition being used",
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
-        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/api/v1",
+	Version:          "",
+	Host:             "",
+	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "go-quiz",
-	Description:      "This is the API documentation for go-quiz, a simple Quiz API allowing users to obtain quizzes, answer the questions and see their results compared to other users.",
+	Title:            "",
+	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

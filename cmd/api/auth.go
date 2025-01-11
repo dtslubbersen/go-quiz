@@ -29,7 +29,7 @@ type CreateTokenPayload struct {
 func (a *application) createTokenHandler(w http.ResponseWriter, r *http.Request) {
 	var payload CreateTokenPayload
 
-	if err := readJson(w, r, payload); err != nil {
+	if err := readJson(w, r, &payload); err != nil {
 		a.badRequest(w, r, err)
 		return
 	}

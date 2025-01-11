@@ -1,22 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is the API documentation for go-quiz, a simple Quiz API allowing users to obtain quizzes, answer the questions and see their results compared to other users.",
-        "title": "go-quiz",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "Declan Lubbersen",
-            "url": "https://github.com/dtslubbersen/go-quiz",
-            "email": "dtslubbersen@gmail.com"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
-        "version": "1.0"
+        "contact": {}
     },
-    "host": "localhost:8080",
-    "basePath": "/api/v1",
     "paths": {
         "/auth/token": {
             "post": {
@@ -66,6 +52,11 @@
         },
         "/quizzes": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Fetches a list of all quizzes from the in memory store",
                 "consumes": [
                     "application/json"
@@ -100,6 +91,11 @@
         },
         "/quizzes/{quizId}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Fetches a specific quiz using its ID from the in-memory store",
                 "consumes": [
                     "application/json"
@@ -144,6 +140,11 @@
         },
         "/quizzes/{quizId}/results": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Fetches the result of a quiz attempt by the current user.",
                 "consumes": [
                     "application/json"
@@ -188,6 +189,11 @@
         },
         "/quizzes/{quizId}/submit": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Allows a user to submit answers for a given quiz",
                 "consumes": [
                     "application/json"
@@ -348,14 +354,6 @@
                     "type": "integer"
                 }
             }
-        }
-    },
-    "securityDefinitions": {
-        "ApiKeyAuth": {
-            "description": "Description for what is this security definition being used",
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
         }
     }
 }

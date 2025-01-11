@@ -23,13 +23,15 @@ const version = "1.0.0"
 //	@license.name	Apache 2.0
 //	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @securityDefinitions.apikey	ApiKeyAuth
-// @in							header
-// @name						Authorization
-// @description				Description for what is this security definition being used
+//	@securityDefinitions.oauth2		BearerAuth
+//	@type							http
+//	@scheme							bearer
+//	@bearerFormat					JWT
+//	@description				Use a 'Bearer {token}' to authenticate your requests
 
-// @host		localhost:8080
-// @BasePath	/api/v1
+//	@host		localhost:8080
+//	@BasePath	/api/v1
+
 func Start() {
 	cfg := appConfig{
 		apiUrl:        "localhost:8080",

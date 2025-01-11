@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func (a *application) JwtTokenMiddleware(next http.Handler) http.Handler {
+func (a *application) jwtTokenMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 

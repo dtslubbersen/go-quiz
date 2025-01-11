@@ -24,6 +24,7 @@ const quizCtxKey quizKey = "post"
 //	@Failure		400	{object}	error
 //	@Failure		500	{object}	error
 //	@Router			/quizzes [get]
+//	@Security		BearerAuth
 func (a *application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) {
 	quizzes, err := a.store.Quizzes.GetAll()
 
@@ -50,6 +51,7 @@ func (a *application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) 
 //	@Failure		404		{object}	error
 //	@Failure		500		{object}	error
 //	@Router			/quizzes/{quizId} [get]
+//	@Security		BearerAuth
 func (a *application) getQuizByIdHandler(w http.ResponseWriter, r *http.Request) {
 	quiz := getQuizFromCtx(r)
 
@@ -78,6 +80,7 @@ type SubmitQuizAnswersPayload struct {
 //	@Failure		400		{object}	error
 //	@Failure		500		{object}	error
 //	@Router			/quizzes/{quizId}/submit [post]
+//	@Security		BearerAuth
 func (a *application) submitAnswersHandler(w http.ResponseWriter, r *http.Request) {
 	var payload SubmitQuizAnswersPayload
 
@@ -154,6 +157,7 @@ func (a *application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 //	@Failure		404		{object}	error
 //	@Failure		500		{object}	error
 //	@Router			/quizzes/{quizId}/results [get]
+//	@Security		BearerAuth
 func (a *application) getQuizResultsHandler(w http.ResponseWriter, r *http.Request) {
 	quiz, user := getQuizFromCtx(r), getUserFromCtx(r)
 	result, err := a.store.Results.GetByQuizAndUserId(quiz.Id, user.Id)

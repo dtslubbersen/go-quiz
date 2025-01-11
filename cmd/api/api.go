@@ -44,12 +44,11 @@ func (a *application) createRouter() http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:8080"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedOrigins:   []string{a.configuration.apiUrl},
+		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
@@ -67,7 +66,7 @@ func (a *application) createRouter() http.Handler {
 		})
 
 		r.Route("/quizzes", func(r chi.Router) {
-			//r.Use(a.JwtTokenMiddleware)
+			r.Use(a.jwtTokenMiddleware)
 
 			r.Get("/", a.getQuizzesHandler)
 
