@@ -16,9 +16,9 @@ type Seed struct {
 }
 
 func NewSeed() *Seed {
-	questions, _ := pkg.ReadMapFromJsonFile[Question, QuestionId](getDataFilePath("questions.json"))
-	quizzes, _ := pkg.ReadMapFromJsonFile[Quiz, QuizId](getDataFilePath("quizzes.json"))
-	userAnswers, _ := pkg.ReadMapFromJsonFile[UserAnswer, UserAnswerId](getDataFilePath("user_answers.json"))
+	questions, _ := pkg.ReadMapFromJsonFile[Question, QuestionId](getDataFilePath("questions.json"), "id")
+	quizzes, _ := pkg.ReadMapFromJsonFile[Quiz, QuizId](getDataFilePath("quizzes.json"), "id")
+	userAnswers, _ := pkg.ReadMapFromJsonFile[UserAnswer, UserAnswerId](getDataFilePath("user_answers.json"), "id")
 
 	return &Seed{
 		questions:   questions,

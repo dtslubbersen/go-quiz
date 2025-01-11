@@ -8,29 +8,30 @@ import (
 	"reflect"
 )
 
-func ReadMapFromJsonFile[T any, K comparable](filename string) (map[K]*T, error) {
-	file, err := os.ReadFile(filename)
+func ReadMapFromJsonFile[T any, K comparable](fileName string, keyFieldName string) (map[K]*T, error) {
+	file, err := os.ReadFile(fileName)
 
 	if err != nil {
-		return nil, fmt.Errorf("could not read file %s: %v", filename, err)
+		return nil, fmt.Errorf("could not read file %s: %v", fileName, err)
 	}
 
 	var items []T
 
 	if err := json.Unmarshal(file, &items); err != nil {
-		return nil, fmt.Errorf("could not unmarshall json %s: %v", filename, err)
+		return nil, fmt.Errorf("could not unmarshall json %s: %v", fileName, err)
 	}
 
-	itemMap := make(map[K]*T)
+	itemsMap := make(map[K]*T)
 	for _, item := range items {
 		v := reflect.ValueOf(item)
-		idField := v.FieldByName("Id")
-		if !idField.IsValid() {
-			log.Fatalf("Missing 'Id' field in struct %T", item)
+		field := v.FieldByName(keyFieldName)
+		if !field.IsValid() {
+			log.Fatalf("Missing '%s' field in struct %T", keyFieldName, item)
 		}
-		id := idField.Interface()
-		itemMap[id.(K)] = &item
+
+		mapKeyValue := field.Interface()
+		itemsMap[mapKeyValue.(K)] = &item
 	}
 
-	return itemMap, nil
+	return itemsMap, nil
 }
