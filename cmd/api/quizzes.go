@@ -54,23 +54,51 @@ func (a *application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	quiz, user := getQuizFromCtx(r), getUserFromCtx(r)
+	quiz := getQuizFromCtx(r)
+
+	if len(quiz.Questions) != len(payload.Answers) {
+		a.badRequest(w, r, errors.New("amount of answers and question count do not match"))
+		return
+	}
+
 	answersMap := make(map[int64]int)
 
 	for _, answer := range payload.Answers {
 		answersMap[answer.QuestionId] = answer.AnswerIndex
 	}
 
-	var userAnswers []store.UserAnswer
+	correctAnswerCount := 0
+	user := getUserFromCtx(r)
 
 	for _, question := range quiz.Questions {
 		answerIndex := answersMap[int64(question.Id)]
-		userAnswers = append(userAnswers, store.UserAnswer{
+		isCorrect := question.CorrectAnswerIndex == answerIndex
+
+		if isCorrect {
+			correctAnswerCount++
+		}
+
+		userAnswer := &store.UserAnswer{
 			QuestionId:  question.Id,
 			UserId:      user.Id,
 			AnswerIndex: answerIndex,
-			IsCorrect:   question.CorrectAnswerIndex == answerIndex,
-		})
+			IsCorrect:   isCorrect,
+		}
+		_ = a.store.UserAnswers.Add(userAnswer)
+	}
+
+	result := &store.Result{
+		QuizId:        quiz.Id,
+		QuestionCount: len(quiz.Questions),
+		UserId:        user.Id,
+		Score:         correctAnswerCount,
+		TopPercentile: 0,
+	}
+
+	err := a.store.Results.Add(result)
+
+	if err != nil {
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)

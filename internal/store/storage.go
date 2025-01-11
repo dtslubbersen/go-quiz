@@ -40,9 +40,13 @@ func NewStorage(seed *Seed) Storage {
 		Quizzes: &QuizStore{
 			quizzes: seed.quizzes,
 		},
-		Results: &ResultStore{},
+		Results: &ResultStore{
+			results: make(map[ResultId]*Result),
+			nextId:  1,
+		},
 		UserAnswers: &UserAnswerStore{
 			userAnswers: seed.userAnswers,
+			nextId:      55,
 		},
 		Users: &UserStore{
 			users: seed.users,

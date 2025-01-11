@@ -76,7 +76,7 @@ func (a *application) createRouter() http.Handler {
 
 				r.Get("/", a.getQuizByIdHandler)
 				r.Post("/submit", a.submitAnswersHandler)
-				r.Post("/results", a.getResultsHandler)
+				r.Get("/results", a.getResultsHandler)
 			})
 		})
 	})
