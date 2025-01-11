@@ -1,8 +1,22 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "This is the API documentation for go-quiz, a simple Quiz API allowing users to obtain quizzes, answer the questions and see their results compared to other users.",
+        "title": "go-quiz",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Declan Lubbersen",
+            "url": "https://github.com/dtslubbersen/go-quiz",
+            "email": "dtslubbersen@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
     },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
     "paths": {
         "/auth/token": {
             "post": {
@@ -354,6 +368,14 @@
                     "type": "integer"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Use a 'Bearer {token}' to authenticate your requests",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

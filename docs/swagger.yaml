@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   api.CreateTokenPayload:
     properties:
@@ -74,8 +75,21 @@ definitions:
       user_score:
         type: integer
     type: object
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    email: dtslubbersen@gmail.com
+    name: Declan Lubbersen
+    url: https://github.com/dtslubbersen/go-quiz
+  description: This is the API documentation for go-quiz, a simple Quiz API allowing
+    users to obtain quizzes, answer the questions and see their results compared to
+    other users.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: go-quiz
+  version: "1.0"
 paths:
   /auth/token:
     post:
@@ -232,4 +246,10 @@ paths:
       summary: Submits answers for a quiz
       tags:
       - quizzes
+securityDefinitions:
+  BearerAuth:
+    description: Use a 'Bearer {token}' to authenticate your requests
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
