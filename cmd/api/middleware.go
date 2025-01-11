@@ -19,15 +19,15 @@ func (a *application) JwtTokenMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		parts := strings.SplitN(authHeader, " ", 2)
+		headerParts := strings.SplitN(authHeader, " ", 2)
 
-		if len(parts) != 2 || parts[0] != "Bearer" {
+		if len(headerParts) != 2 || headerParts[0] != "Bearer" {
 			a.unauthorized(w, r, fmt.Errorf("corrupted authorization header"))
 			return
 		}
 
-		token := parts[1]
-		jwtToken, err := a.authenticator.ValidateToken(token)
+		bearerToken := headerParts[1]
+		jwtToken, err := a.authenticator.ValidateToken(bearerToken)
 
 		if err != nil {
 			a.unauthorized(w, r, err)

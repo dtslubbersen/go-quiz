@@ -6,7 +6,7 @@ type Quiz struct {
 	Id          QuizId      `json:"id"`
 	Title       string      `json:"title"`
 	Description string      `json:"description"`
-	Questions   []*Question `json:"questions"`
+	Questions   []*Question `json:"questions,omitempty"`
 }
 
 type QuizStore struct {

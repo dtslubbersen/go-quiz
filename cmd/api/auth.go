@@ -9,10 +9,23 @@ import (
 )
 
 type CreateTokenPayload struct {
-	Email    string `json:"email" validate:"required,email,max=256"`
-	Password string `json:"password" validate:"required,min=8,max=64"`
+	Email    string `json:"email" validate:"required,email,max=256" example:"demo@quiz.com"`
+	Password string `json:"password" validate:"required,min=8,max=64" example:"password"`
 }
 
+// CreateToken godoc
+//
+//	@Summary		Generates an authentication token
+//	@Description	Creates a JWT token for a user after validating their credentials
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			payload	body		CreateTokenPayload	true	"User credentials"
+//	@Success		201		{string}	string				"JWT token"
+//	@Failure		400		{object}	error
+//	@Failure		401		{object}	error
+//	@Failure		500		{object}	error
+//	@Router			/auth/token [post]
 func (a *application) createTokenHandler(w http.ResponseWriter, r *http.Request) {
 	var payload CreateTokenPayload
 
@@ -61,5 +74,4 @@ func (a *application) createTokenHandler(w http.ResponseWriter, r *http.Request)
 	if err := a.writeDataResponse(w, http.StatusCreated, token); err != nil {
 		a.internalServerError(w, r, err)
 	}
-
 }

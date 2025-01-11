@@ -13,6 +13,17 @@ type quizKey string
 
 const quizCtxKey quizKey = "post"
 
+// GetQuizzes godoc
+//
+//	@Summary		Retrieves all quizzes
+//	@Description	Fetches a list of all quizzes from the in memory store
+//	@Tags			quizzes
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{array}		store.Quiz
+//	@Failure		400	{object}	error
+//	@Failure		500	{object}	error
+//	@Router			/quizzes [get]
 func (a *application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) {
 	quizzes, err := a.store.Quizzes.GetAll()
 
@@ -26,6 +37,19 @@ func (a *application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
+// GetQuizById godoc
+//
+//	@Summary		Retrieves a quiz by ID
+//	@Description	Fetches a specific quiz using its ID from the in-memory store
+//	@Tags			quizzes
+//	@Accept			json
+//	@Produce		json
+//	@Param			quizId	path		int	true	"Quiz ID"
+//	@Success		200		{object}	store.Quiz
+//	@Failure		400		{object}	error
+//	@Failure		404		{object}	error
+//	@Failure		500		{object}	error
+//	@Router			/quizzes/{quizId} [get]
 func (a *application) getQuizByIdHandler(w http.ResponseWriter, r *http.Request) {
 	quiz := getQuizFromCtx(r)
 
@@ -41,6 +65,19 @@ type SubmitQuizAnswersPayload struct {
 	} `json:"answers" validate:"required"`
 }
 
+// SubmitQuizAnswers godoc
+//
+//	@Summary		Submits answers for a quiz
+//	@Description	Allows a user to submit answers for a given quiz
+//	@Tags			quizzes
+//	@Accept			json
+//	@Produce		json
+//	@Param			quizId	path		int							true	"Quiz ID"
+//	@Param			payload	body		SubmitQuizAnswersPayload	true	"User's answers"
+//	@Success		200		{object}	store.Result
+//	@Failure		400		{object}	error
+//	@Failure		500		{object}	error
+//	@Router			/quizzes/{quizId}/submit [post]
 func (a *application) submitAnswersHandler(w http.ResponseWriter, r *http.Request) {
 	var payload SubmitQuizAnswersPayload
 
@@ -104,7 +141,20 @@ func (a *application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusOK)
 }
 
-func (a *application) getResultsHandler(w http.ResponseWriter, r *http.Request) {
+// GetQuizResults godoc
+//
+//	@Summary		Retrieves quiz results for a user
+//	@Description	Fetches the result of a quiz attempt by the current user.
+//	@Tags			quizzes
+//	@Accept			json
+//	@Produce		json
+//	@Param			quizId	path		int	true	"Quiz ID"
+//	@Success		200		{object}	store.Result
+//	@Failure		400		{object}	error
+//	@Failure		404		{object}	error
+//	@Failure		500		{object}	error
+//	@Router			/quizzes/{quizId}/results [get]
+func (a *application) getQuizResultsHandler(w http.ResponseWriter, r *http.Request) {
 	quiz, user := getQuizFromCtx(r), getUserFromCtx(r)
 	result, err := a.store.Results.GetByQuizAndUserId(quiz.Id, user.Id)
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/swaggo/swag/example/basic/docs"
 	"go-quiz/internal/auth"
 	"go-quiz/internal/store"
 	"os"
@@ -19,6 +18,7 @@ import (
 	"time"
 
 	httpSwagger "github.com/swaggo/http-swagger/v2"
+	swaggerDocs "go-quiz/docs"
 )
 
 type application struct {
@@ -76,7 +76,7 @@ func (a *application) createRouter() http.Handler {
 
 				r.Get("/", a.getQuizByIdHandler)
 				r.Post("/submit", a.submitAnswersHandler)
-				r.Get("/results", a.getResultsHandler)
+				r.Get("/results", a.getQuizResultsHandler)
 			})
 		})
 	})
@@ -85,9 +85,9 @@ func (a *application) createRouter() http.Handler {
 }
 
 func (a *application) run(mux http.Handler) error {
-	docs.SwaggerInfo.Version = "1.0.0"
-	docs.SwaggerInfo.Host = a.configuration.apiUrl
-	docs.SwaggerInfo.BasePath = "/v1"
+	swaggerDocs.SwaggerInfo.Version = version
+	swaggerDocs.SwaggerInfo.Host = a.configuration.apiUrl
+	swaggerDocs.SwaggerInfo.BasePath = "/api/v1"
 
 	server := &http.Server{
 		Addr:         a.configuration.listenAddress,
