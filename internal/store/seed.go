@@ -1,8 +1,12 @@
 package store
 
 import (
-	"go-quiz/pkg"
+	"encoding/json"
+	"fmt"
+	"log"
+	"os"
 	"path/filepath"
+	"reflect"
 	"runtime"
 )
 
@@ -16,9 +20,9 @@ type Seed struct {
 }
 
 func NewSeed() *Seed {
-	questions, _ := pkg.ReadMapFromJsonFile[Question, QuestionId](getDataFilePath("questions.json"), "Id")
-	quizzes, _ := pkg.ReadMapFromJsonFile[Quiz, QuizId](getDataFilePath("quizzes.json"), "Id")
-	userAnswers, _ := pkg.ReadMapFromJsonFile[UserAnswer, UserAnswerId](getDataFilePath("user_answers.json"), "Id")
+	questions, _ := readMapFromJsonFile[Question, QuestionId](getDataFilePath("questions.json"), "Id")
+	quizzes, _ := readMapFromJsonFile[Quiz, QuizId](getDataFilePath("quizzes.json"), "Id")
+	userAnswers, _ := readMapFromJsonFile[UserAnswer, UserAnswerId](getDataFilePath("user_answers.json"), "Id")
 
 	return &Seed{
 		questions:   questions,
@@ -64,4 +68,32 @@ func getSeedUsers() map[UserId]*User {
 		bobUser.Id:  &bobUser,
 		janeUser.Id: &janeUser,
 	}
+}
+
+func readMapFromJsonFile[T any, K comparable](fileName string, keyFieldName string) (map[K]*T, error) {
+	file, err := os.ReadFile(fileName)
+
+	if err != nil {
+		return nil, fmt.Errorf("could not read file %s: %v", fileName, err)
+	}
+
+	var items []T
+
+	if err := json.Unmarshal(file, &items); err != nil {
+		return nil, fmt.Errorf("could not unmarshall json %s: %v", fileName, err)
+	}
+
+	itemsMap := make(map[K]*T)
+	for _, item := range items {
+		v := reflect.ValueOf(item)
+		field := v.FieldByName(keyFieldName)
+		if !field.IsValid() {
+			log.Fatalf("Missing '%s' field in struct %T", keyFieldName, item)
+		}
+
+		mapKeyValue := field.Interface()
+		itemsMap[mapKeyValue.(K)] = &item
+	}
+
+	return itemsMap, nil
 }
