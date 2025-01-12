@@ -49,7 +49,7 @@ func (a *application) createRouter() http.Handler {
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{a.configuration.apiUrl},
 		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
 		MaxAge:           360,

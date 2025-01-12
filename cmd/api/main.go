@@ -23,6 +23,7 @@ const version = "1.0.0"
 //	@license.name				Apache 2.0
 //	@license.url				http://www.apache.org/licenses/LICENSE-2.0.html
 //
+//	@scheme						http
 //	@host						localhost:8080
 //	@BasePath					/api/v1
 //
