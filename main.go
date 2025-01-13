@@ -1,10 +1,10 @@
 package main
 
 import (
-	"go-quiz/cmd/cli"
+	"go-quiz/cmd/api"
 )
 
 func main() {
-	//api.Start()
-	cli.Execute()
+	api.Start()
+	//cli.Execute()
 }
