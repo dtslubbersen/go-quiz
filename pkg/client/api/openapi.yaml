@@ -181,7 +181,10 @@ paths:
         required: true
       responses:
         "200":
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_quizzes__quizId__results_get_200_response'
           description: OK
         "400":
           content:
@@ -224,6 +227,8 @@ components:
           type: object
         error:
           type: string
+        status_code:
+          type: integer
       type: object
     api.SubmitQuizAnswersPayload:
       properties:
@@ -236,9 +241,9 @@ components:
       type: object
     api.TokenCreatedResponse:
       example:
-        expires_in: 0
+        expires_in: 6
         user:
-          id: 6
+          id: 1
           email: email
         token: token
       properties:
@@ -251,7 +256,7 @@ components:
       type: object
     api.UserResponse:
       example:
-        id: 6
+        id: 1
         email: email
       properties:
         email:
@@ -259,14 +264,27 @@ components:
         id:
           type: integer
       type: object
+    store.Performance:
+      example:
+        correct_answers_count:
+          key: 1
+        users_taken_count: 5
+      properties:
+        correct_answers_count:
+          additionalProperties:
+            type: integer
+          type: object
+        users_taken_count:
+          type: integer
+      type: object
     store.Question:
       example:
-        quiz_id: 5
+        quiz_id: 7
         answers:
         - answers
         - answers
-        correct_answer_index: 6
-        id: 1
+        correct_answer_index: 5
+        id: 2
         value: value
       properties:
         answers:
@@ -284,29 +302,35 @@ components:
       type: object
     store.Quiz:
       example:
+        performance:
+          correct_answers_count:
+            key: 1
+          users_taken_count: 5
         questions:
-        - quiz_id: 5
+        - quiz_id: 7
           answers:
           - answers
           - answers
-          correct_answer_index: 6
-          id: 1
+          correct_answer_index: 5
+          id: 2
           value: value
-        - quiz_id: 5
+        - quiz_id: 7
           answers:
           - answers
           - answers
-          correct_answer_index: 6
-          id: 1
+          correct_answer_index: 5
+          id: 2
           value: value
         description: description
-        id: 0
+        id: 6
         title: title
       properties:
         description:
           type: string
         id:
           type: integer
+        performance:
+          $ref: '#/components/schemas/store.Performance'
         questions:
           items:
             $ref: '#/components/schemas/store.Question'
@@ -316,24 +340,24 @@ components:
       type: object
     store.Result:
       example:
-        question_count: 6
-        quiz_id: 1
-        user_percentile: 5
-        user_id: 5
-        user_score: 2
-        id: 0
+        correct_answers_count: 6
+        question_count: 5
+        quiz_id: 5
+        top_percentile: 2.3021358869347655
+        user_id: 7
+        id: 1
       properties:
+        correct_answers_count:
+          type: integer
         id:
           type: integer
         question_count:
           type: integer
         quiz_id:
           type: integer
+        top_percentile:
+          type: number
         user_id:
-          type: integer
-        user_percentile:
-          type: integer
-        user_score:
           type: integer
       type: object
     _auth_token_post_201_response:
@@ -344,10 +368,11 @@ components:
             $ref: '#/components/schemas/api.TokenCreatedResponse'
         type: object
       example:
+        status_code: 0
         data:
-          expires_in: 0
+          expires_in: 6
           user:
-            id: 6
+            id: 1
             email: email
           token: token
         error: error
@@ -359,6 +384,7 @@ components:
             type: string
         type: object
       example:
+        status_code: 5
         data: "{}"
         error: error
     _quizzes_get_200_response:
@@ -371,42 +397,51 @@ components:
             type: array
         type: object
       example:
+        status_code: 0
         data:
-        - questions:
-          - quiz_id: 5
+        - performance:
+            correct_answers_count:
+              key: 1
+            users_taken_count: 5
+          questions:
+          - quiz_id: 7
             answers:
             - answers
             - answers
-            correct_answer_index: 6
-            id: 1
+            correct_answer_index: 5
+            id: 2
             value: value
-          - quiz_id: 5
+          - quiz_id: 7
             answers:
             - answers
             - answers
-            correct_answer_index: 6
-            id: 1
+            correct_answer_index: 5
+            id: 2
             value: value
           description: description
-          id: 0
+          id: 6
           title: title
-        - questions:
-          - quiz_id: 5
+        - performance:
+            correct_answers_count:
+              key: 1
+            users_taken_count: 5
+          questions:
+          - quiz_id: 7
             answers:
             - answers
             - answers
-            correct_answer_index: 6
-            id: 1
+            correct_answer_index: 5
+            id: 2
             value: value
-          - quiz_id: 5
+          - quiz_id: 7
             answers:
             - answers
             - answers
-            correct_answer_index: 6
-            id: 1
+            correct_answer_index: 5
+            id: 2
             value: value
           description: description
-          id: 0
+          id: 6
           title: title
         error: error
     _quizzes__quizId__get_200_response:
@@ -417,24 +452,29 @@ components:
             $ref: '#/components/schemas/store.Quiz'
         type: object
       example:
+        status_code: 0
         data:
+          performance:
+            correct_answers_count:
+              key: 1
+            users_taken_count: 5
           questions:
-          - quiz_id: 5
+          - quiz_id: 7
             answers:
             - answers
             - answers
-            correct_answer_index: 6
-            id: 1
+            correct_answer_index: 5
+            id: 2
             value: value
-          - quiz_id: 5
+          - quiz_id: 7
             answers:
             - answers
             - answers
-            correct_answer_index: 6
-            id: 1
+            correct_answer_index: 5
+            id: 2
             value: value
           description: description
-          id: 0
+          id: 6
           title: title
         error: error
     _quizzes__quizId__results_get_200_response:
@@ -445,13 +485,14 @@ components:
             $ref: '#/components/schemas/store.Result'
         type: object
       example:
+        status_code: 0
         data:
-          question_count: 6
-          quiz_id: 1
-          user_percentile: 5
-          user_id: 5
-          user_score: 2
-          id: 0
+          correct_answers_count: 6
+          question_count: 5
+          quiz_id: 5
+          top_percentile: 2.3021358869347655
+          user_id: 7
+          id: 1
         error: error
     api_SubmitQuizAnswersPayload_answers_inner:
       properties:

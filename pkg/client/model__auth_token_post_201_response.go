@@ -20,8 +20,9 @@ var _ MappedNullable = &AuthTokenPost201Response{}
 
 // AuthTokenPost201Response struct for AuthTokenPost201Response
 type AuthTokenPost201Response struct {
-	Data  *ApiTokenCreatedResponse `json:"data,omitempty"`
-	Error *string                  `json:"error,omitempty"`
+	Data       *ApiTokenCreatedResponse `json:"data,omitempty"`
+	Error      *string                  `json:"error,omitempty"`
+	StatusCode *int32                   `json:"status_code,omitempty"`
 }
 
 // NewAuthTokenPost201Response instantiates a new AuthTokenPost201Response object
@@ -105,6 +106,38 @@ func (o *AuthTokenPost201Response) SetError(v string) {
 	o.Error = &v
 }
 
+// GetStatusCode returns the StatusCode field value if set, zero value otherwise.
+func (o *AuthTokenPost201Response) GetStatusCode() int32 {
+	if o == nil || IsNil(o.StatusCode) {
+		var ret int32
+		return ret
+	}
+	return *o.StatusCode
+}
+
+// GetStatusCodeOk returns a tuple with the StatusCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AuthTokenPost201Response) GetStatusCodeOk() (*int32, bool) {
+	if o == nil || IsNil(o.StatusCode) {
+		return nil, false
+	}
+	return o.StatusCode, true
+}
+
+// HasStatusCode returns a boolean if a field has been set.
+func (o *AuthTokenPost201Response) HasStatusCode() bool {
+	if o != nil && !IsNil(o.StatusCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatusCode gets a reference to the given int32 and assigns it to the StatusCode field.
+func (o *AuthTokenPost201Response) SetStatusCode(v int32) {
+	o.StatusCode = &v
+}
+
 func (o AuthTokenPost201Response) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -120,6 +153,9 @@ func (o AuthTokenPost201Response) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
+	}
+	if !IsNil(o.StatusCode) {
+		toSerialize["status_code"] = o.StatusCode
 	}
 	return toSerialize, nil
 }

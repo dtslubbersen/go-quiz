@@ -3,18 +3,63 @@
     "id": 1,
     "title": "General Knowledge Quiz",
     "description": "A quiz to test your general knowledge on a variety of topics, including history, geography, and more.",
-    "questions": []
+    "questions": [],
+    "performance": {
+      "users_taken_count": 13789,
+      "correct_answers_count": {
+        "0": 613,
+        "1": 3542,
+        "2": 5849,
+        "3": 9021,
+        "4": 10078,
+        "5": 9732,
+        "6": 7439,
+        "7": 5197,
+        "8": 3364,
+        "9": 1683
+      }
+    }
   },
   {
     "id": 2,
     "title": "Science Quiz",
     "description": "A quiz designed to challenge your knowledge of science, including physics, chemistry, biology, and more.",
-    "questions": []
+    "questions": [],
+    "performance": {
+      "users_taken_count": 15892,
+      "correct_answers_count": {
+        "0": 529,
+        "1": 3421,
+        "2": 5987,
+        "3": 8793,
+        "4": 10342,
+        "5": 9654,
+        "6": 7581,
+        "7": 5328,
+        "8": 3189,
+        "9": 1764
+      }
+    }
   },
   {
     "id": 3,
     "title": "Pop Culture Quiz",
     "description": "Test your knowledge of pop culture, from movies to music, TV shows, and current trends.",
-    "questions": []
+    "questions": [],
+    "performance": {
+      "users_taken_count": 32012,
+      "correct_answers_count": {
+        "0": 472,
+        "1": 3287,
+        "2": 6153,
+        "3": 8634,
+        "4": 10129,
+        "5": 9872,
+        "6": 7328,
+        "7": 5512,
+        "8": 3291,
+        "9": 1893
+      }
+    }
   }
 ]

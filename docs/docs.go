@@ -447,7 +447,22 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/store.Result"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -516,6 +531,9 @@ const docTemplate = `{
                 "data": {},
                 "error": {
                     "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
                 }
             }
         },
@@ -570,6 +588,21 @@ const docTemplate = `{
                 }
             }
         },
+        "store.Performance": {
+            "type": "object",
+            "properties": {
+                "correct_answers_count": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "users_taken_count": {
+                    "type": "integer",
+                    "default": 0
+                }
+            }
+        },
         "store.Question": {
             "type": "object",
             "properties": {
@@ -602,6 +635,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "performance": {
+                    "$ref": "#/definitions/store.Performance"
+                },
                 "questions": {
                     "type": "array",
                     "items": {
@@ -616,6 +652,9 @@ const docTemplate = `{
         "store.Result": {
             "type": "object",
             "properties": {
+                "correct_answers_count": {
+                    "type": "integer"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -625,13 +664,10 @@ const docTemplate = `{
                 "quiz_id": {
                     "type": "integer"
                 },
+                "top_percentile": {
+                    "type": "number"
+                },
                 "user_id": {
-                    "type": "integer"
-                },
-                "user_percentile": {
-                    "type": "integer"
-                },
-                "user_score": {
                     "type": "integer"
                 }
             }

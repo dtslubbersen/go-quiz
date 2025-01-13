@@ -8,7 +8,7 @@ func (a *application) healthCheckHandler(w http.ResponseWriter, r *http.Request)
 		"version": version,
 	}
 
-	if err := a.writeDataResponse(w, http.StatusOK, data); err != nil {
+	if err := a.dataResponse(w, http.StatusOK, data); err != nil {
 		a.internalServerError(w, r, err)
 	}
 }

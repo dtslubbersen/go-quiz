@@ -31,15 +31,15 @@ func handleStartCmd(cmd *cobra.Command, args []string) {
 		log.Panicf("Quiz selection failed %v", err)
 	}
 
+	if err := quizContext.CheckForExistingResults(); err != nil {
+		return
+	}
+
 	if err := quizContext.AnswerQuestions(); err != nil {
 		log.Panicf("Failed to process answers %v", err)
 	}
 
 	if err := quizContext.SubmitAnswers(); err != nil {
 		log.Panicf("Failed to submit answers %v", err)
-	}
-
-	if err := quizContext.DisplayResults(); err != nil {
-		log.Panicf("Failed to display results %v", err)
 	}
 }

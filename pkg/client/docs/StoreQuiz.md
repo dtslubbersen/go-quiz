@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Description** | Pointer to **string** |  | [optional] 
 **Id** | Pointer to **int32** |  | [optional] 
+**Performance** | Pointer to [**StorePerformance**](StorePerformance.md) |  | [optional] 
 **Questions** | Pointer to [**[]StoreQuestion**](StoreQuestion.md) |  | [optional] 
 **Title** | Pointer to **string** |  | [optional] 
 
@@ -77,6 +78,31 @@ SetId sets Id field to given value.
 `func (o *StoreQuiz) HasId() bool`
 
 HasId returns a boolean if a field has been set.
+
+### GetPerformance
+
+`func (o *StoreQuiz) GetPerformance() StorePerformance`
+
+GetPerformance returns the Performance field if non-nil, zero value otherwise.
+
+### GetPerformanceOk
+
+`func (o *StoreQuiz) GetPerformanceOk() (*StorePerformance, bool)`
+
+GetPerformanceOk returns a tuple with the Performance field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPerformance
+
+`func (o *StoreQuiz) SetPerformance(v StorePerformance)`
+
+SetPerformance sets Performance field to given value.
+
+### HasPerformance
+
+`func (o *StoreQuiz) HasPerformance() bool`
+
+HasPerformance returns a boolean if a field has been set.
 
 ### GetQuestions
 

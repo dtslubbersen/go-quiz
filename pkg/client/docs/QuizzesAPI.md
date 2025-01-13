@@ -214,7 +214,7 @@ Name | Type | Description  | Notes
 
 ## QuizzesQuizIdSubmitPost
 
-> QuizzesQuizIdSubmitPost(ctx, quizId).Payload(payload).Execute()
+> QuizzesQuizIdResultsGet200Response QuizzesQuizIdSubmitPost(ctx, quizId).Payload(payload).Execute()
 
 Submits answers for a quiz
 
@@ -238,11 +238,13 @@ func main() {
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.QuizzesAPI.QuizzesQuizIdSubmitPost(context.Background(), quizId).Payload(payload).Execute()
+	resp, r, err := apiClient.QuizzesAPI.QuizzesQuizIdSubmitPost(context.Background(), quizId).Payload(payload).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `QuizzesAPI.QuizzesQuizIdSubmitPost``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
+	// response from `QuizzesQuizIdSubmitPost`: QuizzesQuizIdResultsGet200Response
+	fmt.Fprintf(os.Stdout, "Response from `QuizzesAPI.QuizzesQuizIdSubmitPost`: %v\n", resp)
 }
 ```
 
@@ -266,7 +268,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
- (empty response body)
+[**QuizzesQuizIdResultsGet200Response**](QuizzesQuizIdResultsGet200Response.md)
 
 ### Authorization
 

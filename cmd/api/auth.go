@@ -91,7 +91,7 @@ func (a *application) createTokenHandler(w http.ResponseWriter, r *http.Request)
 		},
 	}
 
-	if err := a.writeDataResponse(w, http.StatusCreated, response); err != nil {
+	if err := a.dataResponse(w, http.StatusCreated, response); err != nil {
 		a.internalServerError(w, r, err)
 	}
 }

@@ -1,6 +1,9 @@
 package store
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"golang.org/x/crypto/bcrypt"
+	"sync"
+)
 
 type UserId int64
 
@@ -34,10 +37,14 @@ func (p *password) Compare(text string) error {
 }
 
 type UserStore struct {
+	mu    sync.Mutex
 	users map[UserId]*User
 }
 
 func (s *UserStore) GetByEmail(email string) (*User, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	for _, user := range s.users {
 		if user.Email == email {
 			return user, nil
@@ -48,6 +55,9 @@ func (s *UserStore) GetByEmail(email string) (*User, error) {
 }
 
 func (s *UserStore) GetById(id UserId) (*User, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	user, exists := s.users[id]
 
 	if !exists {

@@ -61,6 +61,8 @@ func (a *application) createRouter() http.Handler {
 	r.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL(docsUrl)))
 
 	r.Route("/api/v1", func(r chi.Router) {
+		r.Get("/health", a.healthCheckHandler)
+
 		r.Route("/auth", func(r chi.Router) {
 			r.Post("/token", a.createTokenHandler)
 		})

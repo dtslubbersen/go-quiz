@@ -1,5 +1,7 @@
 package store
 
+import "sync"
+
 type QuestionId int64
 
 type Question struct {
@@ -13,10 +15,14 @@ type Question struct {
 type Answer string
 
 type QuestionStore struct {
+	mu        sync.Mutex
 	questions map[QuestionId]*Question
 }
 
 func (s *QuestionStore) GetByQuizId(quizId QuizId) ([]*Question, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	var questions []*Question
 
 	for _, question := range s.questions {

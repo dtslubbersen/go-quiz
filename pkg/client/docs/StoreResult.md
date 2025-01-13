@@ -4,12 +4,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**CorrectAnswersCount** | Pointer to **int32** |  | [optional] 
 **Id** | Pointer to **int32** |  | [optional] 
 **QuestionCount** | Pointer to **int32** |  | [optional] 
 **QuizId** | Pointer to **int32** |  | [optional] 
+**TopPercentile** | Pointer to **float32** |  | [optional] 
 **UserId** | Pointer to **int32** |  | [optional] 
-**UserPercentile** | Pointer to **int32** |  | [optional] 
-**UserScore** | Pointer to **int32** |  | [optional] 
 
 ## Methods
 
@@ -29,6 +29,31 @@ will change when the set of required properties is changed
 NewStoreResultWithDefaults instantiates a new StoreResult object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
+
+### GetCorrectAnswersCount
+
+`func (o *StoreResult) GetCorrectAnswersCount() int32`
+
+GetCorrectAnswersCount returns the CorrectAnswersCount field if non-nil, zero value otherwise.
+
+### GetCorrectAnswersCountOk
+
+`func (o *StoreResult) GetCorrectAnswersCountOk() (*int32, bool)`
+
+GetCorrectAnswersCountOk returns a tuple with the CorrectAnswersCount field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCorrectAnswersCount
+
+`func (o *StoreResult) SetCorrectAnswersCount(v int32)`
+
+SetCorrectAnswersCount sets CorrectAnswersCount field to given value.
+
+### HasCorrectAnswersCount
+
+`func (o *StoreResult) HasCorrectAnswersCount() bool`
+
+HasCorrectAnswersCount returns a boolean if a field has been set.
 
 ### GetId
 
@@ -105,6 +130,31 @@ SetQuizId sets QuizId field to given value.
 
 HasQuizId returns a boolean if a field has been set.
 
+### GetTopPercentile
+
+`func (o *StoreResult) GetTopPercentile() float32`
+
+GetTopPercentile returns the TopPercentile field if non-nil, zero value otherwise.
+
+### GetTopPercentileOk
+
+`func (o *StoreResult) GetTopPercentileOk() (*float32, bool)`
+
+GetTopPercentileOk returns a tuple with the TopPercentile field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTopPercentile
+
+`func (o *StoreResult) SetTopPercentile(v float32)`
+
+SetTopPercentile sets TopPercentile field to given value.
+
+### HasTopPercentile
+
+`func (o *StoreResult) HasTopPercentile() bool`
+
+HasTopPercentile returns a boolean if a field has been set.
+
 ### GetUserId
 
 `func (o *StoreResult) GetUserId() int32`
@@ -129,56 +179,6 @@ SetUserId sets UserId field to given value.
 `func (o *StoreResult) HasUserId() bool`
 
 HasUserId returns a boolean if a field has been set.
-
-### GetUserPercentile
-
-`func (o *StoreResult) GetUserPercentile() int32`
-
-GetUserPercentile returns the UserPercentile field if non-nil, zero value otherwise.
-
-### GetUserPercentileOk
-
-`func (o *StoreResult) GetUserPercentileOk() (*int32, bool)`
-
-GetUserPercentileOk returns a tuple with the UserPercentile field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetUserPercentile
-
-`func (o *StoreResult) SetUserPercentile(v int32)`
-
-SetUserPercentile sets UserPercentile field to given value.
-
-### HasUserPercentile
-
-`func (o *StoreResult) HasUserPercentile() bool`
-
-HasUserPercentile returns a boolean if a field has been set.
-
-### GetUserScore
-
-`func (o *StoreResult) GetUserScore() int32`
-
-GetUserScore returns the UserScore field if non-nil, zero value otherwise.
-
-### GetUserScoreOk
-
-`func (o *StoreResult) GetUserScoreOk() (*int32, bool)`
-
-GetUserScoreOk returns a tuple with the UserScore field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetUserScore
-
-`func (o *StoreResult) SetUserScore(v int32)`
-
-SetUserScore sets UserScore field to given value.
-
-### HasUserScore
-
-`func (o *StoreResult) HasUserScore() bool`
-
-HasUserScore returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

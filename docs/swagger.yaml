@@ -20,6 +20,8 @@ definitions:
       data: {}
       error:
         type: string
+      status_code:
+        type: integer
     type: object
   api.SubmitQuizAnswersPayload:
     properties:
@@ -54,6 +56,16 @@ definitions:
       id:
         type: integer
     type: object
+  store.Performance:
+    properties:
+      correct_answers_count:
+        additionalProperties:
+          type: integer
+        type: object
+      users_taken_count:
+        default: 0
+        type: integer
+    type: object
   store.Question:
     properties:
       answers:
@@ -75,6 +87,8 @@ definitions:
         type: string
       id:
         type: integer
+      performance:
+        $ref: '#/definitions/store.Performance'
       questions:
         items:
           $ref: '#/definitions/store.Question'
@@ -84,17 +98,17 @@ definitions:
     type: object
   store.Result:
     properties:
+      correct_answers_count:
+        type: integer
       id:
         type: integer
       question_count:
         type: integer
       quiz_id:
         type: integer
+      top_percentile:
+        type: number
       user_id:
-        type: integer
-      user_percentile:
-        type: integer
-      user_score:
         type: integer
     type: object
 host: localhost:8080
@@ -341,6 +355,13 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/store.Result'
+              type: object
         "400":
           description: Bad Request
           schema:

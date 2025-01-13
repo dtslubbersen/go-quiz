@@ -20,10 +20,11 @@ var _ MappedNullable = &StoreQuiz{}
 
 // StoreQuiz struct for StoreQuiz
 type StoreQuiz struct {
-	Description *string `json:"description,omitempty"`
-	Id *int32 `json:"id,omitempty"`
-	Questions []StoreQuestion `json:"questions,omitempty"`
-	Title *string `json:"title,omitempty"`
+	Description *string           `json:"description,omitempty"`
+	Id          *int32            `json:"id,omitempty"`
+	Performance *StorePerformance `json:"performance,omitempty"`
+	Questions   []StoreQuestion   `json:"questions,omitempty"`
+	Title       *string           `json:"title,omitempty"`
 }
 
 // NewStoreQuiz instantiates a new StoreQuiz object
@@ -107,6 +108,38 @@ func (o *StoreQuiz) SetId(v int32) {
 	o.Id = &v
 }
 
+// GetPerformance returns the Performance field value if set, zero value otherwise.
+func (o *StoreQuiz) GetPerformance() StorePerformance {
+	if o == nil || IsNil(o.Performance) {
+		var ret StorePerformance
+		return ret
+	}
+	return *o.Performance
+}
+
+// GetPerformanceOk returns a tuple with the Performance field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StoreQuiz) GetPerformanceOk() (*StorePerformance, bool) {
+	if o == nil || IsNil(o.Performance) {
+		return nil, false
+	}
+	return o.Performance, true
+}
+
+// HasPerformance returns a boolean if a field has been set.
+func (o *StoreQuiz) HasPerformance() bool {
+	if o != nil && !IsNil(o.Performance) {
+		return true
+	}
+
+	return false
+}
+
+// SetPerformance gets a reference to the given StorePerformance and assigns it to the Performance field.
+func (o *StoreQuiz) SetPerformance(v StorePerformance) {
+	o.Performance = &v
+}
+
 // GetQuestions returns the Questions field value if set, zero value otherwise.
 func (o *StoreQuiz) GetQuestions() []StoreQuestion {
 	if o == nil || IsNil(o.Questions) {
@@ -172,7 +205,7 @@ func (o *StoreQuiz) SetTitle(v string) {
 }
 
 func (o StoreQuiz) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -186,6 +219,9 @@ func (o StoreQuiz) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
+	}
+	if !IsNil(o.Performance) {
+		toSerialize["performance"] = o.Performance
 	}
 	if !IsNil(o.Questions) {
 		toSerialize["questions"] = o.Questions
@@ -231,5 +267,3 @@ func (v *NullableStoreQuiz) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

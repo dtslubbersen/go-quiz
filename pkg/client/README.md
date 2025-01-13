@@ -99,6 +99,7 @@ Class | Method | HTTP request | Description
  - [QuizzesGet200Response](docs/QuizzesGet200Response.md)
  - [QuizzesQuizIdGet200Response](docs/QuizzesQuizIdGet200Response.md)
  - [QuizzesQuizIdResultsGet200Response](docs/QuizzesQuizIdResultsGet200Response.md)
+ - [StorePerformance](docs/StorePerformance.md)
  - [StoreQuestion](docs/StoreQuestion.md)
  - [StoreQuiz](docs/StoreQuiz.md)
  - [StoreResult](docs/StoreResult.md)

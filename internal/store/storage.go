@@ -16,11 +16,17 @@ type Storage struct {
 	Quizzes interface {
 		GetById(QuizId) (*Quiz, error)
 		GetAll() ([]*Quiz, error)
+		Update(*Quiz) error
 	}
 	Results interface {
-		Add(*Result) error
+		Add(*Result) (*Result, error)
 		GetByQuizAndUserId(QuizId, UserId) (*Result, error)
 	}
+	//QuizPerformances interface {
+	//	GetByQuizId(QuizId) (*Performance, error)
+	//	Add(*Performance) (*Performance, error)
+	//	Update(*Performance) error
+	//}
 	UserAnswers interface {
 		Add(*UserAnswer) error
 		GetByQuizId(QuizId) ([]*UserAnswer, error)
@@ -40,6 +46,9 @@ func NewStorage(seed *Seed) Storage {
 		Quizzes: &QuizStore{
 			quizzes: seed.quizzes,
 		},
+		//QuizPerformances: &QuizPerformanceStore{
+		//	performances: seed.performances,
+		//},
 		Results: &ResultStore{
 			results: make(map[ResultId]*Result),
 			nextId:  1,

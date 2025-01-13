@@ -3,8 +3,10 @@ package api
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"go-quiz/internal/store"
+	"math"
 	"net/http"
 	"strconv"
 )
@@ -33,7 +35,7 @@ func (a *application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	if err := a.writeDataResponse(w, http.StatusOK, quizzes); err != nil {
+	if err := a.dataResponse(w, http.StatusOK, quizzes); err != nil {
 		a.internalServerError(w, r, err)
 	}
 }
@@ -55,7 +57,7 @@ func (a *application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) 
 func (a *application) getQuizByIdHandler(w http.ResponseWriter, r *http.Request) {
 	quiz := getQuizFromCtx(r)
 
-	if err := a.writeDataResponse(w, http.StatusOK, quiz); err != nil {
+	if err := a.dataResponse(w, http.StatusOK, quiz); err != nil {
 		a.internalServerError(w, r, err)
 	}
 }
@@ -74,11 +76,11 @@ type SubmitQuizAnswersPayload struct {
 //	@Tags			quizzes
 //	@Accept			json
 //	@Produce		json
-//	@Param			quizId	path	int							true	"Quiz ID"
-//	@Param			payload	body	SubmitQuizAnswersPayload	true	"User's answers"
-//	@Success		200
-//	@Failure		400	{object}	Response{error=string}
-//	@Failure		500	{object}	Response{error=string}
+//	@Param			quizId	path		int							true	"Quiz ID"
+//	@Param			payload	body		SubmitQuizAnswersPayload	true	"User's answers"
+//	@Success		200		{object}	Response{data=store.Result}
+//	@Failure		400		{object}	Response{error=string}
+//	@Failure		500		{object}	Response{error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes/{quizId}/submit [post]
 func (a *application) submitAnswersHandler(w http.ResponseWriter, r *http.Request) {
@@ -94,7 +96,12 @@ func (a *application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	quiz := getQuizFromCtx(r)
+	quiz, user := getQuizFromCtx(r), getUserFromCtx(r)
+
+	if result, _ := a.store.Results.GetByQuizAndUserId(quiz.Id, user.Id); result != nil {
+		a.badRequest(w, r, errors.New("quiz already answered"))
+		return
+	}
 
 	if len(quiz.Questions) != len(payload.Answers) {
 		a.badRequest(w, r, errors.New("amount of answers and question count do not match"))
@@ -107,15 +114,14 @@ func (a *application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 		answersMap[answer.QuestionId] = answer.AnswerIndex
 	}
 
-	correctAnswerCount := 0
-	user := getUserFromCtx(r)
+	correctAnswersCount := 0
 
 	for _, question := range quiz.Questions {
 		answerIndex := answersMap[int64(question.Id)]
 		isCorrect := question.CorrectAnswerIndex == answerIndex
 
 		if isCorrect {
-			correctAnswerCount++
+			correctAnswersCount++
 		}
 
 		userAnswer := &store.UserAnswer{
@@ -124,24 +130,56 @@ func (a *application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 			AnswerIndex: answerIndex,
 			IsCorrect:   isCorrect,
 		}
-		_ = a.store.UserAnswers.Add(userAnswer)
+
+		if err := a.store.UserAnswers.Add(userAnswer); err != nil {
+			a.badRequest(w, r, err)
+			return
+		}
 	}
 
-	result := &store.Result{
-		QuizId:        quiz.Id,
-		QuestionCount: len(quiz.Questions),
-		UserId:        user.Id,
-		Score:         correctAnswerCount,
-		TopPercentile: 0,
-	}
+	percentileRank := calculatePercentileRank(quiz, correctAnswersCount)
+	quiz.Performance.UsersTakenCount++
 
-	err := a.store.Results.Add(result)
-
-	if err != nil {
+	if err := a.store.Quizzes.Update(quiz); err != nil {
+		a.internalServerError(w, r, err)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	result := &store.Result{
+		QuizId:              quiz.Id,
+		QuestionCount:       len(quiz.Questions),
+		UserId:              user.Id,
+		CorrectAnswersCount: correctAnswersCount,
+		PercentileRank:      percentileRank,
+	}
+
+	newResult, err := a.store.Results.Add(result)
+
+	if err != nil {
+		a.badRequest(w, r, err)
+		return
+	}
+
+	if err := a.dataResponse(w, http.StatusOK, newResult); err != nil {
+		a.internalServerError(w, r, err)
+	}
+}
+
+func calculatePercentileRank(quiz *store.Quiz, correctAnswersCount int) float64 {
+	totalUsers := quiz.Performance.UsersTakenCount
+	if totalUsers == 0 {
+		return 100
+	}
+
+	usersWithLessCorrectAnswers := 0
+	for count, numUsers := range quiz.Performance.CorrectAnswersCount {
+		if count < correctAnswersCount {
+			usersWithLessCorrectAnswers += numUsers
+		}
+	}
+
+	percentileRank := float64(usersWithLessCorrectAnswers) / float64(totalUsers) * 100
+	return math.Round(percentileRank*100) / 100
 }
 
 // GetQuizResults godoc
@@ -167,7 +205,16 @@ func (a *application) getQuizResultsHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	if err := a.writeDataResponse(w, http.StatusOK, result); err != nil {
+	_, err = a.store.UserAnswers.GetByQuizId(quiz.Id)
+
+	if err != nil {
+		a.internalServerError(w, r, err)
+		return
+	}
+
+	result.PercentileRank = calculatePercentileRank(quiz, result.CorrectAnswersCount)
+
+	if err := a.dataResponse(w, http.StatusOK, result); err != nil {
 		a.internalServerError(w, r, err)
 	}
 }
@@ -178,7 +225,7 @@ func (a *application) quizzesContextMiddleware(next http.Handler) http.Handler {
 		id, err := strconv.ParseInt(idParameter, 10, 64)
 
 		if err != nil {
-			a.internalServerError(w, r, err)
+			a.badRequest(w, r, fmt.Errorf("invalid quizId %s", idParameter))
 			return
 		}
 

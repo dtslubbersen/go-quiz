@@ -20,9 +20,23 @@ type Seed struct {
 }
 
 func NewSeed() *Seed {
-	questions, _ := readMapFromJsonFile[Question, QuestionId](getDataFilePath("questions.json"), "Id")
-	quizzes, _ := readMapFromJsonFile[Quiz, QuizId](getDataFilePath("quizzes.json"), "Id")
-	userAnswers, _ := readMapFromJsonFile[UserAnswer, UserAnswerId](getDataFilePath("user_answers.json"), "Id")
+	questions, err := readMapFromJsonFile[Question, QuestionId](getDataFilePath("questions.json"), "Id")
+
+	if err != nil {
+		panic(err)
+	}
+
+	quizzes, err := readMapFromJsonFile[Quiz, QuizId](getDataFilePath("quizzes.json"), "Id")
+
+	if err != nil {
+		panic(err)
+	}
+
+	userAnswers, err := readMapFromJsonFile[UserAnswer, UserAnswerId](getDataFilePath("user_answers.json"), "Id")
+
+	if err != nil {
+		panic(err)
+	}
 
 	return &Seed{
 		questions:   questions,

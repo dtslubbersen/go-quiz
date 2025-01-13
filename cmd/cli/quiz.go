@@ -2,10 +2,10 @@ package cli
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/manifoldco/promptui"
 	openapi "go-quiz/pkg/client"
-	"log"
 )
 
 type QuizContext struct {
@@ -24,10 +24,10 @@ func NewQuizContext(openApiClient *openapi.APIClient, ctx context.Context) *Quiz
 	}
 }
 
-func (q *QuizContext) AuthenticateUser(username string, password string) error {
+func (q *QuizContext) AuthenticateUser(email string, password string) error {
 	payload := openapi.ApiCreateTokenPayload{
-		Email:    "demo@quiz.com",
-		Password: "password",
+		Email:    email,
+		Password: password,
 	}
 	request := q.ApiClient.AuthAPI.AuthTokenPost(q.Context).Payload(payload)
 
@@ -35,8 +35,6 @@ func (q *QuizContext) AuthenticateUser(username string, password string) error {
 	if err != nil {
 		return err
 	}
-
-	log.Printf("Demo user authenticated with token %v", *response.Data.Token)
 
 	apiKeys := map[string]openapi.APIKey{
 		"BearerAuth": {Key: *response.Data.Token, Prefix: "Bearer"},
@@ -83,6 +81,23 @@ func (q *QuizContext) SelectQuiz() error {
 	}
 
 	return nil
+}
+
+func (q *QuizContext) CheckForExistingResults() error {
+	request := q.ApiClient.QuizzesAPI.QuizzesQuizIdResultsGet(q.Context, q.SelectedQuizId)
+	response, _, err := q.ApiClient.QuizzesAPI.QuizzesQuizIdResultsGetExecute(request)
+
+	if err != nil && err.Error() == "404 Not Found" {
+		return nil
+	}
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("You've already completed this quiz.\nFrom the %d questions you answered %d correctly\nThat places you in the top %.2f percent of our users!\n", *response.Data.QuestionCount, *response.Data.CorrectAnswersCount, *response.Data.TopPercentile)
+
+	return errors.New("cannot answer quiz more than once")
 }
 
 func (q *QuizContext) AnswerQuestions() error {
@@ -135,24 +150,12 @@ func (q *QuizContext) SubmitAnswers() error {
 	}
 
 	request := q.ApiClient.QuizzesAPI.QuizzesQuizIdSubmitPost(q.Context, q.SelectedQuizId).Payload(payload)
-	_, err := q.ApiClient.QuizzesAPI.QuizzesQuizIdSubmitPostExecute(request)
-
-	if err != nil {
-		return fmt.Errorf("failed to submit quiz answers %v", err)
-	}
-
-	return nil
-}
-
-func (q *QuizContext) DisplayResults() error {
-	request := q.ApiClient.QuizzesAPI.QuizzesQuizIdResultsGet(q.Context, q.SelectedQuizId)
-	response, _, err := q.ApiClient.QuizzesAPI.QuizzesQuizIdResultsGetExecute(request)
+	response, _, err := q.ApiClient.QuizzesAPI.QuizzesQuizIdSubmitPostExecute(request)
 
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Congratulations, you completed the quiz!\nFrom the %d questions you answered %d correctly\nThat places you in the top %d percent of our users!", *response.Data.QuestionCount, *response.Data.UserScore, *response.Data.UserPercentile)
-
+	fmt.Printf("Congratulations, you completed the quiz!\nFrom the %d questions you answered %d correctly\nThat places you in the top %.2f percent of our users!\n", *response.Data.QuestionCount, *response.Data.CorrectAnswersCount, *response.Data.TopPercentile)
 	return nil
 }

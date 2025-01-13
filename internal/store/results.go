@@ -7,12 +7,12 @@ import (
 type ResultId int64
 
 type Result struct {
-	Id            ResultId `json:"id"`
-	QuizId        QuizId   `json:"quiz_id"`
-	QuestionCount int      `json:"question_count"`
-	UserId        UserId   `json:"user_id"`
-	Score         int      `json:"user_score"`
-	TopPercentile int      `json:"user_percentile"`
+	Id                  ResultId `json:"id"`
+	QuizId              QuizId   `json:"quiz_id"`
+	QuestionCount       int      `json:"question_count"`
+	UserId              UserId   `json:"user_id"`
+	CorrectAnswersCount int      `json:"correct_answers_count"`
+	PercentileRank      float64  `json:"top_percentile"`
 }
 
 type ResultStore struct {
@@ -21,22 +21,25 @@ type ResultStore struct {
 	nextId  ResultId
 }
 
-func (s *ResultStore) Add(result *Result) error {
+func (s *ResultStore) Add(result *Result) (*Result, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	if _, err := s.getByCompositeKey(result.QuizId, result.UserId); err == nil {
-		return DuplicateEntryError
+		return nil, DuplicateEntryError
 	}
 
 	result.Id = s.nextId
 	s.results[result.Id] = result
 	s.nextId++
-	return nil
+	return result, nil
 
 }
 
 func (s *ResultStore) GetByQuizAndUserId(quizId QuizId, userId UserId) (*Result, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	return s.getByCompositeKey(quizId, userId)
 }
 

@@ -20,12 +20,12 @@ var _ MappedNullable = &StoreResult{}
 
 // StoreResult struct for StoreResult
 type StoreResult struct {
-	Id *int32 `json:"id,omitempty"`
-	QuestionCount *int32 `json:"question_count,omitempty"`
-	QuizId *int32 `json:"quiz_id,omitempty"`
-	UserId *int32 `json:"user_id,omitempty"`
-	UserPercentile *int32 `json:"user_percentile,omitempty"`
-	UserScore *int32 `json:"user_score,omitempty"`
+	CorrectAnswersCount *int32   `json:"correct_answers_count,omitempty"`
+	Id                  *int32   `json:"id,omitempty"`
+	QuestionCount       *int32   `json:"question_count,omitempty"`
+	QuizId              *int32   `json:"quiz_id,omitempty"`
+	TopPercentile       *float32 `json:"top_percentile,omitempty"`
+	UserId              *int32   `json:"user_id,omitempty"`
 }
 
 // NewStoreResult instantiates a new StoreResult object
@@ -43,6 +43,38 @@ func NewStoreResult() *StoreResult {
 func NewStoreResultWithDefaults() *StoreResult {
 	this := StoreResult{}
 	return &this
+}
+
+// GetCorrectAnswersCount returns the CorrectAnswersCount field value if set, zero value otherwise.
+func (o *StoreResult) GetCorrectAnswersCount() int32 {
+	if o == nil || IsNil(o.CorrectAnswersCount) {
+		var ret int32
+		return ret
+	}
+	return *o.CorrectAnswersCount
+}
+
+// GetCorrectAnswersCountOk returns a tuple with the CorrectAnswersCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StoreResult) GetCorrectAnswersCountOk() (*int32, bool) {
+	if o == nil || IsNil(o.CorrectAnswersCount) {
+		return nil, false
+	}
+	return o.CorrectAnswersCount, true
+}
+
+// HasCorrectAnswersCount returns a boolean if a field has been set.
+func (o *StoreResult) HasCorrectAnswersCount() bool {
+	if o != nil && !IsNil(o.CorrectAnswersCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetCorrectAnswersCount gets a reference to the given int32 and assigns it to the CorrectAnswersCount field.
+func (o *StoreResult) SetCorrectAnswersCount(v int32) {
+	o.CorrectAnswersCount = &v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
@@ -141,6 +173,38 @@ func (o *StoreResult) SetQuizId(v int32) {
 	o.QuizId = &v
 }
 
+// GetTopPercentile returns the TopPercentile field value if set, zero value otherwise.
+func (o *StoreResult) GetTopPercentile() float32 {
+	if o == nil || IsNil(o.TopPercentile) {
+		var ret float32
+		return ret
+	}
+	return *o.TopPercentile
+}
+
+// GetTopPercentileOk returns a tuple with the TopPercentile field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StoreResult) GetTopPercentileOk() (*float32, bool) {
+	if o == nil || IsNil(o.TopPercentile) {
+		return nil, false
+	}
+	return o.TopPercentile, true
+}
+
+// HasTopPercentile returns a boolean if a field has been set.
+func (o *StoreResult) HasTopPercentile() bool {
+	if o != nil && !IsNil(o.TopPercentile) {
+		return true
+	}
+
+	return false
+}
+
+// SetTopPercentile gets a reference to the given float32 and assigns it to the TopPercentile field.
+func (o *StoreResult) SetTopPercentile(v float32) {
+	o.TopPercentile = &v
+}
+
 // GetUserId returns the UserId field value if set, zero value otherwise.
 func (o *StoreResult) GetUserId() int32 {
 	if o == nil || IsNil(o.UserId) {
@@ -173,72 +237,8 @@ func (o *StoreResult) SetUserId(v int32) {
 	o.UserId = &v
 }
 
-// GetUserPercentile returns the UserPercentile field value if set, zero value otherwise.
-func (o *StoreResult) GetUserPercentile() int32 {
-	if o == nil || IsNil(o.UserPercentile) {
-		var ret int32
-		return ret
-	}
-	return *o.UserPercentile
-}
-
-// GetUserPercentileOk returns a tuple with the UserPercentile field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *StoreResult) GetUserPercentileOk() (*int32, bool) {
-	if o == nil || IsNil(o.UserPercentile) {
-		return nil, false
-	}
-	return o.UserPercentile, true
-}
-
-// HasUserPercentile returns a boolean if a field has been set.
-func (o *StoreResult) HasUserPercentile() bool {
-	if o != nil && !IsNil(o.UserPercentile) {
-		return true
-	}
-
-	return false
-}
-
-// SetUserPercentile gets a reference to the given int32 and assigns it to the UserPercentile field.
-func (o *StoreResult) SetUserPercentile(v int32) {
-	o.UserPercentile = &v
-}
-
-// GetUserScore returns the UserScore field value if set, zero value otherwise.
-func (o *StoreResult) GetUserScore() int32 {
-	if o == nil || IsNil(o.UserScore) {
-		var ret int32
-		return ret
-	}
-	return *o.UserScore
-}
-
-// GetUserScoreOk returns a tuple with the UserScore field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *StoreResult) GetUserScoreOk() (*int32, bool) {
-	if o == nil || IsNil(o.UserScore) {
-		return nil, false
-	}
-	return o.UserScore, true
-}
-
-// HasUserScore returns a boolean if a field has been set.
-func (o *StoreResult) HasUserScore() bool {
-	if o != nil && !IsNil(o.UserScore) {
-		return true
-	}
-
-	return false
-}
-
-// SetUserScore gets a reference to the given int32 and assigns it to the UserScore field.
-func (o *StoreResult) SetUserScore(v int32) {
-	o.UserScore = &v
-}
-
 func (o StoreResult) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -247,6 +247,9 @@ func (o StoreResult) MarshalJSON() ([]byte, error) {
 
 func (o StoreResult) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.CorrectAnswersCount) {
+		toSerialize["correct_answers_count"] = o.CorrectAnswersCount
+	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
@@ -256,14 +259,11 @@ func (o StoreResult) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.QuizId) {
 		toSerialize["quiz_id"] = o.QuizId
 	}
+	if !IsNil(o.TopPercentile) {
+		toSerialize["top_percentile"] = o.TopPercentile
+	}
 	if !IsNil(o.UserId) {
 		toSerialize["user_id"] = o.UserId
-	}
-	if !IsNil(o.UserPercentile) {
-		toSerialize["user_percentile"] = o.UserPercentile
-	}
-	if !IsNil(o.UserScore) {
-		toSerialize["user_score"] = o.UserScore
 	}
 	return toSerialize, nil
 }
@@ -303,5 +303,3 @@ func (v *NullableStoreResult) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-
