@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 ## AuthTokenPost
 
-> string AuthTokenPost(ctx).Payload(payload).Execute()
+> AuthTokenPost201Response AuthTokenPost(ctx).Payload(payload).Execute()
 
 Generates an authentication token
 
@@ -38,7 +38,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error when calling `AuthAPI.AuthTokenPost``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `AuthTokenPost`: string
+	// response from `AuthTokenPost`: AuthTokenPost201Response
 	fmt.Fprintf(os.Stdout, "Response from `AuthAPI.AuthTokenPost`: %v\n", resp)
 }
 ```
@@ -58,7 +58,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**string**
+[**AuthTokenPost201Response**](AuthTokenPost201Response.md)
 
 ### Authorization
 

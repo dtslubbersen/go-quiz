@@ -20,9 +20,9 @@ const quizCtxKey quizKey = "post"
 //	@Tags			quizzes
 //	@Accept			json
 //	@Produce		json
-//	@Success		200	{array}		store.Quiz
-//	@Failure		400	{object}	error
-//	@Failure		500	{object}	error
+//	@Success		200	{object}	Response{data=[]store.Quiz}
+//	@Failure		400	{object}	Response{error=string}
+//	@Failure		500	{object}	Response{error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes [get]
 func (a *application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) {
@@ -46,10 +46,10 @@ func (a *application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) 
 //	@Accept			json
 //	@Produce		json
 //	@Param			quizId	path		int	true	"Quiz ID"
-//	@Success		200		{object}	store.Quiz
-//	@Failure		400		{object}	error
-//	@Failure		404		{object}	error
-//	@Failure		500		{object}	error
+//	@Success		200		{object}	Response{data=store.Quiz}
+//	@Failure		400		{object}	Response{error=string}
+//	@Failure		404		{object}	Response{error=string}
+//	@Failure		500		{object}	Response{error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes/{quizId} [get]
 func (a *application) getQuizByIdHandler(w http.ResponseWriter, r *http.Request) {
@@ -74,11 +74,11 @@ type SubmitQuizAnswersPayload struct {
 //	@Tags			quizzes
 //	@Accept			json
 //	@Produce		json
-//	@Param			quizId	path		int							true	"Quiz ID"
-//	@Param			payload	body		SubmitQuizAnswersPayload	true	"User's answers"
-//	@Success		200		{object}	store.Result
-//	@Failure		400		{object}	error
-//	@Failure		500		{object}	error
+//	@Param			quizId	path	int							true	"Quiz ID"
+//	@Param			payload	body	SubmitQuizAnswersPayload	true	"User's answers"
+//	@Success		200
+//	@Failure		400	{object}	Response{error=string}
+//	@Failure		500	{object}	Response{error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes/{quizId}/submit [post]
 func (a *application) submitAnswersHandler(w http.ResponseWriter, r *http.Request) {
@@ -152,10 +152,10 @@ func (a *application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 //	@Accept			json
 //	@Produce		json
 //	@Param			quizId	path		int	true	"Quiz ID"
-//	@Success		200		{object}	store.Result
-//	@Failure		400		{object}	error
-//	@Failure		404		{object}	error
-//	@Failure		500		{object}	error
+//	@Success		200		{object}	Response{data=store.Result}
+//	@Failure		400		{object}	Response{error=string}
+//	@Failure		404		{object}	Response{error=string}
+//	@Failure		500		{object}	Response{error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes/{quizId}/results [get]
 func (a *application) getQuizResultsHandler(w http.ResponseWriter, r *http.Request) {

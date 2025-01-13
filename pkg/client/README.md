@@ -89,8 +89,16 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [ApiCreateTokenPayload](docs/ApiCreateTokenPayload.md)
+ - [ApiResponse](docs/ApiResponse.md)
  - [ApiSubmitQuizAnswersPayload](docs/ApiSubmitQuizAnswersPayload.md)
  - [ApiSubmitQuizAnswersPayloadAnswersInner](docs/ApiSubmitQuizAnswersPayloadAnswersInner.md)
+ - [ApiTokenCreatedResponse](docs/ApiTokenCreatedResponse.md)
+ - [ApiUserResponse](docs/ApiUserResponse.md)
+ - [AuthTokenPost201Response](docs/AuthTokenPost201Response.md)
+ - [AuthTokenPost400Response](docs/AuthTokenPost400Response.md)
+ - [QuizzesGet200Response](docs/QuizzesGet200Response.md)
+ - [QuizzesQuizIdGet200Response](docs/QuizzesQuizIdGet200Response.md)
+ - [QuizzesQuizIdResultsGet200Response](docs/QuizzesQuizIdResultsGet200Response.md)
  - [StoreQuestion](docs/StoreQuestion.md)
  - [StoreQuiz](docs/StoreQuiz.md)
  - [StoreResult](docs/StoreResult.md)

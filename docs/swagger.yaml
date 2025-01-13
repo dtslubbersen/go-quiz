@@ -15,6 +15,12 @@ definitions:
     - email
     - password
     type: object
+  api.Response:
+    properties:
+      data: {}
+      error:
+        type: string
+    type: object
   api.SubmitQuizAnswersPayload:
     properties:
       answers:
@@ -31,6 +37,22 @@ definitions:
         type: array
     required:
     - answers
+    type: object
+  api.TokenCreatedResponse:
+    properties:
+      expires_in:
+        type: integer
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/api.UserResponse'
+    type: object
+  api.UserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
     type: object
   store.Question:
     properties:
@@ -107,18 +129,41 @@ paths:
       - application/json
       responses:
         "201":
-          description: JWT token
+          description: Created
           schema:
-            type: string
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/api.TokenCreatedResponse'
+              type: object
         "400":
           description: Bad Request
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
         "401":
           description: Unauthorized
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
       summary: Generates an authentication token
       tags:
       - auth
@@ -133,15 +178,32 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/store.Quiz'
-            type: array
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/store.Quiz'
+                  type: array
+              type: object
         "400":
           description: Bad Request
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
       security:
       - BearerAuth: []
       summary: Retrieves all quizzes
@@ -164,16 +226,39 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/store.Quiz'
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/store.Quiz'
+              type: object
         "400":
           description: Bad Request
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
         "404":
           description: Not Found
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
       security:
       - BearerAuth: []
       summary: Retrieves a quiz by ID
@@ -196,16 +281,39 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/store.Result'
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/store.Result'
+              type: object
         "400":
           description: Bad Request
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
         "404":
           description: Not Found
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
       security:
       - BearerAuth: []
       summary: Retrieves quiz results for a user
@@ -233,14 +341,24 @@ paths:
       responses:
         "200":
           description: OK
-          schema:
-            $ref: '#/definitions/store.Result'
         "400":
           description: Bad Request
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
-          schema: {}
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                error:
+                  type: string
+              type: object
       security:
       - BearerAuth: []
       summary: Submits answers for a quiz

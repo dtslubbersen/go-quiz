@@ -31,25 +31,25 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-          description: JWT token
+                $ref: '#/components/schemas/_auth_token_post_201_response'
+          description: Created
         "400":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Bad Request
         "401":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Unauthorized
         "500":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Internal Server Error
       summary: Generates an authentication token
       tags:
@@ -63,21 +63,19 @@ paths:
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/store.Quiz'
-                type: array
+                $ref: '#/components/schemas/_quizzes_get_200_response'
           description: OK
         "400":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Bad Request
         "500":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Internal Server Error
       security:
       - BearerAuth: []
@@ -99,25 +97,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/store.Quiz'
+                $ref: '#/components/schemas/_quizzes__quizId__get_200_response'
           description: OK
         "400":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Bad Request
         "404":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Not Found
         "500":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Internal Server Error
       security:
       - BearerAuth: []
@@ -139,25 +137,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/store.Result'
+                $ref: '#/components/schemas/_quizzes__quizId__results_get_200_response'
           description: OK
         "400":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Bad Request
         "404":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Not Found
         "500":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Internal Server Error
       security:
       - BearerAuth: []
@@ -183,22 +181,19 @@ paths:
         required: true
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/store.Result'
+          content: {}
           description: OK
         "400":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Bad Request
         "500":
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/_auth_token_post_400_response'
           description: Internal Server Error
       security:
       - BearerAuth: []
@@ -223,6 +218,13 @@ components:
       - email
       - password
       type: object
+    api.Response:
+      properties:
+        data:
+          type: object
+        error:
+          type: string
+      type: object
     api.SubmitQuizAnswersPayload:
       properties:
         answers:
@@ -231,6 +233,31 @@ components:
           type: array
       required:
       - answers
+      type: object
+    api.TokenCreatedResponse:
+      example:
+        expires_in: 0
+        user:
+          id: 6
+          email: email
+        token: token
+      properties:
+        expires_in:
+          type: integer
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/api.UserResponse'
+      type: object
+    api.UserResponse:
+      example:
+        id: 6
+        email: email
+      properties:
+        email:
+          type: string
+        id:
+          type: integer
       type: object
     store.Question:
       example:
@@ -309,6 +336,123 @@ components:
         user_score:
           type: integer
       type: object
+    _auth_token_post_201_response:
+      allOf:
+      - $ref: '#/components/schemas/api.Response'
+      - properties:
+          data:
+            $ref: '#/components/schemas/api.TokenCreatedResponse'
+        type: object
+      example:
+        data:
+          expires_in: 0
+          user:
+            id: 6
+            email: email
+          token: token
+        error: error
+    _auth_token_post_400_response:
+      allOf:
+      - $ref: '#/components/schemas/api.Response'
+      - properties:
+          error:
+            type: string
+        type: object
+      example:
+        data: "{}"
+        error: error
+    _quizzes_get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/api.Response'
+      - properties:
+          data:
+            items:
+              $ref: '#/components/schemas/store.Quiz'
+            type: array
+        type: object
+      example:
+        data:
+        - questions:
+          - quiz_id: 5
+            answers:
+            - answers
+            - answers
+            correct_answer_index: 6
+            id: 1
+            value: value
+          - quiz_id: 5
+            answers:
+            - answers
+            - answers
+            correct_answer_index: 6
+            id: 1
+            value: value
+          description: description
+          id: 0
+          title: title
+        - questions:
+          - quiz_id: 5
+            answers:
+            - answers
+            - answers
+            correct_answer_index: 6
+            id: 1
+            value: value
+          - quiz_id: 5
+            answers:
+            - answers
+            - answers
+            correct_answer_index: 6
+            id: 1
+            value: value
+          description: description
+          id: 0
+          title: title
+        error: error
+    _quizzes__quizId__get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/api.Response'
+      - properties:
+          data:
+            $ref: '#/components/schemas/store.Quiz'
+        type: object
+      example:
+        data:
+          questions:
+          - quiz_id: 5
+            answers:
+            - answers
+            - answers
+            correct_answer_index: 6
+            id: 1
+            value: value
+          - quiz_id: 5
+            answers:
+            - answers
+            - answers
+            correct_answer_index: 6
+            id: 1
+            value: value
+          description: description
+          id: 0
+          title: title
+        error: error
+    _quizzes__quizId__results_get_200_response:
+      allOf:
+      - $ref: '#/components/schemas/api.Response'
+      - properties:
+          data:
+            $ref: '#/components/schemas/store.Result'
+        type: object
+      example:
+        data:
+          question_count: 6
+          quiz_id: 1
+          user_percentile: 5
+          user_id: 5
+          user_score: 2
+          id: 0
+        error: error
     api_SubmitQuizAnswersPayload_answers_inner:
       properties:
         answer_index:

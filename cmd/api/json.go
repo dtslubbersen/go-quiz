@@ -6,6 +6,11 @@ import (
 	"net/http"
 )
 
+type Response struct {
+	Data  interface{} `json:"data,omitempty"`
+	Error string      `json:"error,omitempty"`
+}
+
 var Validate *validator.Validate
 
 func init() {
@@ -27,17 +32,9 @@ func writeJson(w http.ResponseWriter, status int, data any) error {
 }
 
 func writeErrorResponse(w http.ResponseWriter, status int, message string) error {
-	type envelope struct {
-		Error string `json:"error"`
-	}
-
-	return writeJson(w, status, &envelope{Error: message})
+	return writeJson(w, status, &Response{Error: message})
 }
 
 func (a *application) writeDataResponse(w http.ResponseWriter, status int, data any) error {
-	type envelope struct {
-		Data any `json:"data"`
-	}
-
-	return writeJson(w, status, &envelope{Data: data})
+	return writeJson(w, status, &Response{Data: data})
 }

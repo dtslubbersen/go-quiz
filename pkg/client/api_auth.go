@@ -19,14 +19,13 @@ import (
 	"net/url"
 )
 
-
 // AuthAPIService AuthAPI service
 type AuthAPIService service
 
 type ApiAuthTokenPostRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *AuthAPIService
-	payload *ApiCreateTokenPayload
+	payload    *ApiCreateTokenPayload
 }
 
 // User credentials
@@ -35,7 +34,7 @@ func (r ApiAuthTokenPostRequest) Payload(payload ApiCreateTokenPayload) ApiAuthT
 	return r
 }
 
-func (r ApiAuthTokenPostRequest) Execute() (string, *http.Response, error) {
+func (r ApiAuthTokenPostRequest) Execute() (*AuthTokenPost201Response, *http.Response, error) {
 	return r.ApiService.AuthTokenPostExecute(r)
 }
 
@@ -44,24 +43,25 @@ AuthTokenPost Generates an authentication token
 
 Creates a JWT token for a user after validating their credentials
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthTokenPostRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthTokenPostRequest
 */
 func (a *AuthAPIService) AuthTokenPost(ctx context.Context) ApiAuthTokenPostRequest {
 	return ApiAuthTokenPostRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return string
-func (a *AuthAPIService) AuthTokenPostExecute(r ApiAuthTokenPostRequest) (string, *http.Response, error) {
+//
+//	@return AuthTokenPost201Response
+func (a *AuthAPIService) AuthTokenPostExecute(r ApiAuthTokenPostRequest) (*AuthTokenPost201Response, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  string
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *AuthTokenPost201Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthAPIService.AuthTokenPost")
@@ -120,36 +120,36 @@ func (a *AuthAPIService) AuthTokenPostExecute(r ApiAuthTokenPostRequest) (string
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v map[string]interface{}
+			var v AuthTokenPost400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
-			var v map[string]interface{}
+			var v AuthTokenPost400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 500 {
-			var v map[string]interface{}
+			var v AuthTokenPost400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

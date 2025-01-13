@@ -13,6 +13,17 @@ type CreateTokenPayload struct {
 	Password string `json:"password" validate:"required,min=8,max=64" example:"password"`
 }
 
+type TokenCreatedResponse struct {
+	Token     string       `json:"token"`
+	ExpiresIn int64        `json:"expires_in"`
+	User      UserResponse `json:"user"`
+}
+
+type UserResponse struct {
+	Id    int64  `json:"id"`
+	Email string `json:"email"`
+}
+
 // CreateToken godoc
 //
 //	@Summary		Generates an authentication token
@@ -20,11 +31,11 @@ type CreateTokenPayload struct {
 //	@Tags			auth
 //	@Accept			json
 //	@Produce		json
-//	@Param			payload	body		CreateTokenPayload	true	"User credentials"
-//	@Success		201		{string}	string				"JWT token"
-//	@Failure		400		{object}	error
-//	@Failure		401		{object}	error
-//	@Failure		500		{object}	error
+//	@Param			payload	body		CreateTokenPayload	true "User credentials"
+//	@Success		201		{object}	Response{data=TokenCreatedResponse}
+//	@Failure		400		{object}	Response{error=string}
+//	@Failure		401		{object}	Response{error=string}
+//	@Failure		500		{object}	Response{error=string}
 //	@Router			/auth/token [post]
 func (a *application) createTokenHandler(w http.ResponseWriter, r *http.Request) {
 	var payload CreateTokenPayload
@@ -71,7 +82,16 @@ func (a *application) createTokenHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if err := a.writeDataResponse(w, http.StatusCreated, token); err != nil {
+	response := TokenCreatedResponse{
+		Token:     token,
+		ExpiresIn: claims["exp"].(int64),
+		User: UserResponse{
+			Id:    int64(user.Id),
+			Email: user.Email,
+		},
+	}
+
+	if err := a.writeDataResponse(w, http.StatusCreated, response); err != nil {
 		a.internalServerError(w, r, err)
 	}
 }

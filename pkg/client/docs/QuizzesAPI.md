@@ -13,7 +13,7 @@ Method | HTTP request | Description
 
 ## QuizzesGet
 
-> []StoreQuiz QuizzesGet(ctx).Execute()
+> QuizzesGet200Response QuizzesGet(ctx).Execute()
 
 Retrieves all quizzes
 
@@ -40,7 +40,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error when calling `QuizzesAPI.QuizzesGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `QuizzesGet`: []StoreQuiz
+	// response from `QuizzesGet`: QuizzesGet200Response
 	fmt.Fprintf(os.Stdout, "Response from `QuizzesAPI.QuizzesGet`: %v\n", resp)
 }
 ```
@@ -56,7 +56,7 @@ Other parameters are passed through a pointer to a apiQuizzesGetRequest struct v
 
 ### Return type
 
-[**[]StoreQuiz**](StoreQuiz.md)
+[**QuizzesGet200Response**](QuizzesGet200Response.md)
 
 ### Authorization
 
@@ -74,7 +74,7 @@ Other parameters are passed through a pointer to a apiQuizzesGetRequest struct v
 
 ## QuizzesQuizIdGet
 
-> StoreQuiz QuizzesQuizIdGet(ctx, quizId).Execute()
+> QuizzesQuizIdGet200Response QuizzesQuizIdGet(ctx, quizId).Execute()
 
 Retrieves a quiz by ID
 
@@ -102,7 +102,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error when calling `QuizzesAPI.QuizzesQuizIdGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `QuizzesQuizIdGet`: StoreQuiz
+	// response from `QuizzesQuizIdGet`: QuizzesQuizIdGet200Response
 	fmt.Fprintf(os.Stdout, "Response from `QuizzesAPI.QuizzesQuizIdGet`: %v\n", resp)
 }
 ```
@@ -126,7 +126,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**StoreQuiz**](StoreQuiz.md)
+[**QuizzesQuizIdGet200Response**](QuizzesQuizIdGet200Response.md)
 
 ### Authorization
 
@@ -144,7 +144,7 @@ Name | Type | Description  | Notes
 
 ## QuizzesQuizIdResultsGet
 
-> StoreResult QuizzesQuizIdResultsGet(ctx, quizId).Execute()
+> QuizzesQuizIdResultsGet200Response QuizzesQuizIdResultsGet(ctx, quizId).Execute()
 
 Retrieves quiz results for a user
 
@@ -172,7 +172,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error when calling `QuizzesAPI.QuizzesQuizIdResultsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `QuizzesQuizIdResultsGet`: StoreResult
+	// response from `QuizzesQuizIdResultsGet`: QuizzesQuizIdResultsGet200Response
 	fmt.Fprintf(os.Stdout, "Response from `QuizzesAPI.QuizzesQuizIdResultsGet`: %v\n", resp)
 }
 ```
@@ -196,7 +196,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**StoreResult**](StoreResult.md)
+[**QuizzesQuizIdResultsGet200Response**](QuizzesQuizIdResultsGet200Response.md)
 
 ### Authorization
 
@@ -214,7 +214,7 @@ Name | Type | Description  | Notes
 
 ## QuizzesQuizIdSubmitPost
 
-> StoreResult QuizzesQuizIdSubmitPost(ctx, quizId).Payload(payload).Execute()
+> QuizzesQuizIdSubmitPost(ctx, quizId).Payload(payload).Execute()
 
 Submits answers for a quiz
 
@@ -238,13 +238,11 @@ func main() {
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.QuizzesAPI.QuizzesQuizIdSubmitPost(context.Background(), quizId).Payload(payload).Execute()
+	r, err := apiClient.QuizzesAPI.QuizzesQuizIdSubmitPost(context.Background(), quizId).Payload(payload).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `QuizzesAPI.QuizzesQuizIdSubmitPost``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `QuizzesQuizIdSubmitPost`: StoreResult
-	fmt.Fprintf(os.Stdout, "Response from `QuizzesAPI.QuizzesQuizIdSubmitPost`: %v\n", resp)
 }
 ```
 
@@ -268,7 +266,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**StoreResult**](StoreResult.md)
+ (empty response body)
 
 ### Authorization
 
