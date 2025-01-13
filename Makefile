@@ -6,3 +6,7 @@ gen-client:
 .PHONY: gen-docs
 gen-docs:
 	@swag init -g ./api/main.go -d cmd,internal && swag fmt
+
+.PHONE: docker-build
+docker-build:
+	@docker build -t go-quiz-api -f cmd/api/Dockerfile .

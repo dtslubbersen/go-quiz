@@ -1,0 +1,14 @@
+# Ignore local Go dependencies
+/bin/
+pkg/
+vendor/
+
+# Ignore version control
+.git
+.gitignore
+
+# Ignore IDE/editor config
+.vscode/
+*.swp
+*.swo
+*.idea/
