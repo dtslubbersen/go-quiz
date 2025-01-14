@@ -185,7 +185,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Fetches a list of all quizzes from the in memory store
+      description: Fetches a list of all quizzes from the in memory storage
       produces:
       - application/json
       responses:
@@ -227,7 +227,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Fetches a specific quiz using its ID from the in-memory store
+      description: Fetches a specific quiz using its ID from the in-memory storage
       parameters:
       - description: Quiz ID
         in: path

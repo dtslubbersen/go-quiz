@@ -1,4 +1,5 @@
 .gitignore
+.openapi-generator-ignore
 .travis.yml
 README.md
 api/openapi.yaml
@@ -42,4 +43,6 @@ model_store_question.go
 model_store_quiz.go
 model_store_result.go
 response.go
+test/api_auth_test.go
+test/api_quizzes_test.go
 utils.go

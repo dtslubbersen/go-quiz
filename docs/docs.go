@@ -131,7 +131,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Fetches a list of all quizzes from the in memory store",
+                "description": "Fetches a list of all quizzes from the in memory storage",
                 "consumes": [
                     "application/json"
                 ],
@@ -210,7 +210,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Fetches a specific quiz using its ID from the in-memory store",
+                "description": "Fetches a specific quiz using its ID from the in-memory storage",
                 "consumes": [
                     "application/json"
                 ],

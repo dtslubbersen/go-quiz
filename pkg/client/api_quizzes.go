@@ -35,7 +35,7 @@ func (r ApiQuizzesGetRequest) Execute() (*QuizzesGet200Response, *http.Response,
 /*
 QuizzesGet Retrieves all quizzes
 
-Fetches a list of all quizzes from the in memory store
+Fetches a list of all quizzes from the in memory storage
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiQuizzesGetRequest
@@ -49,7 +49,7 @@ func (a *QuizzesAPIService) QuizzesGet(ctx context.Context) ApiQuizzesGetRequest
 
 // Execute executes the request
 //
-//	@return	QuizzesGet200Response
+//	@return QuizzesGet200Response
 func (a *QuizzesAPIService) QuizzesGetExecute(r ApiQuizzesGetRequest) (*QuizzesGet200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -171,7 +171,7 @@ func (r ApiQuizzesQuizIdGetRequest) Execute() (*QuizzesQuizIdGet200Response, *ht
 /*
 QuizzesQuizIdGet Retrieves a quiz by ID
 
-Fetches a specific quiz using its ID from the in-memory store
+Fetches a specific quiz using its ID from the in-memory storage
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param quizId Quiz ID
@@ -187,7 +187,7 @@ func (a *QuizzesAPIService) QuizzesQuizIdGet(ctx context.Context, quizId int32) 
 
 // Execute executes the request
 //
-//	@return	QuizzesQuizIdGet200Response
+//	@return QuizzesQuizIdGet200Response
 func (a *QuizzesAPIService) QuizzesQuizIdGetExecute(r ApiQuizzesQuizIdGetRequest) (*QuizzesQuizIdGet200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -337,7 +337,7 @@ func (a *QuizzesAPIService) QuizzesQuizIdResultsGet(ctx context.Context, quizId 
 
 // Execute executes the request
 //
-//	@return	QuizzesQuizIdResultsGet200Response
+//	@return QuizzesQuizIdResultsGet200Response
 func (a *QuizzesAPIService) QuizzesQuizIdResultsGetExecute(r ApiQuizzesQuizIdResultsGetRequest) (*QuizzesQuizIdResultsGet200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -494,7 +494,7 @@ func (a *QuizzesAPIService) QuizzesQuizIdSubmitPost(ctx context.Context, quizId 
 
 // Execute executes the request
 //
-//	@return	QuizzesQuizIdResultsGet200Response
+//	@return QuizzesQuizIdResultsGet200Response
 func (a *QuizzesAPIService) QuizzesQuizIdSubmitPostExecute(r ApiQuizzesQuizIdSubmitPostRequest) (*QuizzesQuizIdResultsGet200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost

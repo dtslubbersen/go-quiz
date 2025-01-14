@@ -57,7 +57,7 @@ paths:
       x-codegen-request-body-name: payload
   /quizzes:
     get:
-      description: Fetches a list of all quizzes from the in memory store
+      description: Fetches a list of all quizzes from the in memory storage
       responses:
         "200":
           content:
@@ -84,7 +84,7 @@ paths:
       - quizzes
   /quizzes/{quizId}:
     get:
-      description: Fetches a specific quiz using its ID from the in-memory store
+      description: Fetches a specific quiz using its ID from the in-memory storage
       parameters:
       - description: Quiz ID
         in: path

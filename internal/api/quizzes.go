@@ -28,7 +28,7 @@ const quizCtxKey quizKey = "post"
 //	@Security		BearerAuth
 //	@Router			/quizzes [get]
 func (a *Application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) {
-	quizzes, err := a.store.Quizzes.GetAll()
+	quizzes, err := a.storage.Quizzes.GetAll()
 
 	if err != nil {
 		a.badRequest(w, r, err)
@@ -98,7 +98,7 @@ func (a *Application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 
 	quiz, user := getQuizFromCtx(r), getUserFromCtx(r)
 
-	if result, _ := a.store.Results.GetByQuizAndUserId(quiz.Id, user.Id); result != nil {
+	if result, _ := a.storage.Results.GetByQuizAndUserId(quiz.Id, user.Id); result != nil {
 		a.badRequest(w, r, errors.New("quiz already answered"))
 		return
 	}
@@ -131,7 +131,7 @@ func (a *Application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 			IsCorrect:   isCorrect,
 		}
 
-		if err := a.store.UserAnswers.Add(userAnswer); err != nil {
+		if err := a.storage.UserAnswers.Add(userAnswer); err != nil {
 			a.badRequest(w, r, err)
 			return
 		}
@@ -140,7 +140,7 @@ func (a *Application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 	percentileRank := calculatePercentileRank(quiz, correctAnswersCount)
 	quiz.Performance.UsersTakenCount++
 
-	if err := a.store.Quizzes.Update(quiz); err != nil {
+	if err := a.storage.Quizzes.Update(quiz); err != nil {
 		a.internalServerError(w, r, err)
 		return
 	}
@@ -153,7 +153,7 @@ func (a *Application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 		PercentileRank:      percentileRank,
 	}
 
-	newResult, err := a.store.Results.Add(result)
+	newResult, err := a.storage.Results.Add(result)
 
 	if err != nil {
 		a.badRequest(w, r, err)
@@ -198,14 +198,14 @@ func calculatePercentileRank(quiz *store.Quiz, correctAnswersCount int) float64 
 //	@Router			/quizzes/{quizId}/results [get]
 func (a *Application) getQuizResultsHandler(w http.ResponseWriter, r *http.Request) {
 	quiz, user := getQuizFromCtx(r), getUserFromCtx(r)
-	result, err := a.store.Results.GetByQuizAndUserId(quiz.Id, user.Id)
+	result, err := a.storage.Results.GetByQuizAndUserId(quiz.Id, user.Id)
 
 	if errors.Is(err, store.NotFoundError) {
 		a.notFound(w, r, err)
 		return
 	}
 
-	_, err = a.store.UserAnswers.GetByQuizId(quiz.Id)
+	_, err = a.storage.UserAnswers.GetByQuizId(quiz.Id)
 
 	if err != nil {
 		a.internalServerError(w, r, err)
@@ -231,7 +231,7 @@ func (a *Application) quizzesContextMiddleware(next http.Handler) http.Handler {
 
 		ctx := r.Context()
 
-		quiz, err := a.store.Quizzes.GetById(store.QuizId(id))
+		quiz, err := a.storage.Quizzes.GetById(store.QuizId(id))
 
 		if err != nil {
 			switch {
@@ -243,7 +243,7 @@ func (a *Application) quizzesContextMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		questions, err := a.store.Questions.GetByQuizId(store.QuizId(id))
+		questions, err := a.storage.Questions.GetByQuizId(store.QuizId(id))
 
 		if err != nil {
 			a.internalServerError(w, r, err)

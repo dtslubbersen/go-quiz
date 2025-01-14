@@ -26,7 +26,7 @@ type Application struct {
 	authenticator auth.Authenticator
 	cfg           apiCfg
 	logger        *zap.SugaredLogger
-	store         store.Storage
+	storage       store.Storage
 }
 
 func NewApplication(ctx context.Context, logger *zap.SugaredLogger) *Application {
@@ -49,15 +49,15 @@ func NewApplication(ctx context.Context, logger *zap.SugaredLogger) *Application
 
 	logger.Infoln("seed data extracted from disk")
 
-	store := store.NewStorage(seed)
+	storage := store.NewStorage(seed)
 
-	logger.Infoln("store initialized")
+	logger.Infoln("storage initialized")
 
 	api := &Application{
 		authenticator: jwtAuthenticator,
 		cfg:           cfg,
 		logger:        logger,
-		store:         store,
+		storage:       storage,
 	}
 
 	return api

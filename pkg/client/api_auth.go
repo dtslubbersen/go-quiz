@@ -55,14 +55,13 @@ func (a *AuthAPIService) AuthTokenPost(ctx context.Context) ApiAuthTokenPostRequ
 
 // Execute executes the request
 //
-//	@return	AuthTokenPost201Respo
-//	@return	AuthTokenPost201Response
+//	@return AuthTokenPost201Response
 func (a *AuthAPIService) AuthTokenPostExecute(r ApiAuthTokenPostRequest) (*AuthTokenPost201Response, *http.Response, error) {
+	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
 		localVarReturnValue *AuthTokenPost201Response
-		localVarReturnValue  *AuthTokenPost201Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthAPIService.AuthTokenPost")
@@ -126,9 +125,9 @@ func (a *AuthAPIService) AuthTokenPostExecute(r ApiAuthTokenPostRequest) (*AuthT
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
-					newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
@@ -137,9 +136,9 @@ func (a *AuthAPIService) AuthTokenPostExecute(r ApiAuthTokenPostRequest) (*AuthT
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
-					newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 500 {
@@ -148,9 +147,9 @@ func (a *AuthAPIService) AuthTokenPostExecute(r ApiAuthTokenPostRequest) (*AuthT
 			if err != nil {
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
 			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
-					newErr.model = v
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
