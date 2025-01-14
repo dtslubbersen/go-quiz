@@ -8,12 +8,6 @@
 2. Start the CLI => `go run ./cmd/go-quiz cli`
 3. Answer a quiz!
 
-## Highlights
-* Robust API designed for expandability
-* Interactive CLI experience with `promptui`
-* OpenAPI specification and client generation for decoupled applications
-* Use of stores for data allowing to easily implement a database
-
 ## What can be improved?
 * Replace "primary keys" of structs like `QuizId` and `QuestionId` with UUIDs
 * Containerise applications
