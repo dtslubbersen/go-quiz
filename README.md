@@ -17,7 +17,7 @@
 ## What can be improved?
 * Replace "primary keys" of structs like `QuizId` and `QuestionId` with UUIDs
 * Containerise applications
-* Move business logic from request handlers to service layer
+* Request handlers are big and hard to test (so many cases), move business logic from request handlers to service layer
 * Integrate database, there are some bugs caused by not having transactions
 * Use a `.env` file (or similar) to store configuration values that are currently hard coded
 * Error handling in the CLI with custom error types
