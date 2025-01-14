@@ -17,12 +17,18 @@ type Performance struct {
 	CorrectAnswersCount map[int]int `json:"correct_answers_count"`
 }
 
-type QuizStore struct {
+type QuizStore interface {
+	GetById(QuizId) (*Quiz, error)
+	GetAll() ([]*Quiz, error)
+	Update(*Quiz) error
+}
+
+type InMemoryQuizStore struct {
 	mu      sync.Mutex
 	quizzes map[QuizId]*Quiz
 }
 
-func (s *QuizStore) GetById(id QuizId) (*Quiz, error) {
+func (s *InMemoryQuizStore) GetById(id QuizId) (*Quiz, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -35,7 +41,7 @@ func (s *QuizStore) GetById(id QuizId) (*Quiz, error) {
 	return quiz, nil
 }
 
-func (s *QuizStore) GetAll() ([]*Quiz, error) {
+func (s *InMemoryQuizStore) GetAll() ([]*Quiz, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -48,7 +54,7 @@ func (s *QuizStore) GetAll() ([]*Quiz, error) {
 	return quizzes, nil
 }
 
-func (s *QuizStore) Update(quiz *Quiz) error {
+func (s *InMemoryQuizStore) Update(quiz *Quiz) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 

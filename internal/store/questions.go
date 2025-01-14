@@ -14,12 +14,16 @@ type Question struct {
 
 type Answer string
 
-type QuestionStore struct {
+type QuestionStore interface {
+	ListQuestionsByQuizId(QuizId) ([]*Question, error)
+}
+
+type InMemoryQuestionStore struct {
 	mu        sync.Mutex
 	questions map[QuestionId]*Question
 }
 
-func (s *QuestionStore) GetByQuizId(quizId QuizId) ([]*Question, error) {
+func (s *InMemoryQuestionStore) ListQuestionsByQuizId(quizId QuizId) ([]*Question, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 

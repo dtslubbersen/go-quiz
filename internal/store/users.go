@@ -20,6 +20,16 @@ type password struct {
 	hash  []byte
 }
 
+type UserStore interface {
+	GetByEmail(string) (*User, error)
+	GetById(UserId) (*User, error)
+}
+
+type InMemoryUserStore struct {
+	mu    sync.Mutex
+	users map[UserId]*User
+}
+
 func (p *password) Set(value string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(value), bcrypt.DefaultCost)
 	if err != nil {
@@ -36,12 +46,7 @@ func (p *password) Compare(text string) error {
 	return bcrypt.CompareHashAndPassword(p.hash, []byte(text))
 }
 
-type UserStore struct {
-	mu    sync.Mutex
-	users map[UserId]*User
-}
-
-func (s *UserStore) GetByEmail(email string) (*User, error) {
+func (s *InMemoryUserStore) GetByEmail(email string) (*User, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -54,7 +59,7 @@ func (s *UserStore) GetByEmail(email string) (*User, error) {
 	return nil, NotFoundError
 }
 
-func (s *UserStore) GetById(id UserId) (*User, error) {
+func (s *InMemoryUserStore) GetById(id UserId) (*User, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 

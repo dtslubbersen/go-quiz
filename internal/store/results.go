@@ -15,13 +15,18 @@ type Result struct {
 	PercentileRank      float64  `json:"top_percentile"`
 }
 
-type ResultStore struct {
+type ResultStore interface {
+	Add(*Result) (*Result, error)
+	GetByQuizAndUserId(QuizId, UserId) (*Result, error)
+}
+
+type InMemoryResultStore struct {
 	mu      sync.Mutex
 	results map[ResultId]*Result
 	nextId  ResultId
 }
 
-func (s *ResultStore) Add(result *Result) (*Result, error) {
+func (s *InMemoryResultStore) Add(result *Result) (*Result, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -36,14 +41,14 @@ func (s *ResultStore) Add(result *Result) (*Result, error) {
 
 }
 
-func (s *ResultStore) GetByQuizAndUserId(quizId QuizId, userId UserId) (*Result, error) {
+func (s *InMemoryResultStore) GetByQuizAndUserId(quizId QuizId, userId UserId) (*Result, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	return s.getByCompositeKey(quizId, userId)
 }
 
-func (s *ResultStore) getByCompositeKey(quizId QuizId, userId UserId) (*Result, error) {
+func (s *InMemoryResultStore) getByCompositeKey(quizId QuizId, userId UserId) (*Result, error) {
 	for _, result := range s.results {
 		if result.QuizId == quizId && result.UserId == userId {
 			return result, nil

@@ -15,13 +15,19 @@ type UserAnswer struct {
 	IsCorrect   bool         `json:"is_correct"`
 }
 
-type UserAnswerStore struct {
+type UserAnswerStore interface {
+	Add(*UserAnswer) error
+	GetByQuizId(QuizId) ([]*UserAnswer, error)
+	GetByUserAndQuizId(UserId, QuizId) ([]*UserAnswer, error)
+}
+
+type InMemoryUserAnswerStore struct {
 	mu          sync.RWMutex
 	userAnswers map[UserAnswerId]*UserAnswer
 	nextId      UserAnswerId
 }
 
-func (s *UserAnswerStore) Add(userAnswer *UserAnswer) error {
+func (s *InMemoryUserAnswerStore) Add(userAnswer *UserAnswer) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -36,7 +42,7 @@ func (s *UserAnswerStore) Add(userAnswer *UserAnswer) error {
 	return nil
 }
 
-func (s *UserAnswerStore) GetByQuizId(quizId QuizId) ([]*UserAnswer, error) {
+func (s *InMemoryUserAnswerStore) GetByQuizId(quizId QuizId) ([]*UserAnswer, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -51,7 +57,7 @@ func (s *UserAnswerStore) GetByQuizId(quizId QuizId) ([]*UserAnswer, error) {
 	return userAnswers, nil
 }
 
-func (s *UserAnswerStore) GetByUserAndQuizId(userId UserId, quizId QuizId) ([]*UserAnswer, error) {
+func (s *InMemoryUserAnswerStore) GetByUserAndQuizId(userId UserId, quizId QuizId) ([]*UserAnswer, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -66,7 +72,7 @@ func (s *UserAnswerStore) GetByUserAndQuizId(userId UserId, quizId QuizId) ([]*U
 	return userAnswers, nil
 }
 
-func (s *UserAnswerStore) compositeKeyExists(userId UserId, quizId QuizId, questionId QuestionId) bool {
+func (s *InMemoryUserAnswerStore) compositeKeyExists(userId UserId, quizId QuizId, questionId QuestionId) bool {
 	for _, ua := range s.userAnswers {
 		if ua.UserId == userId && ua.QuizId == quizId && ua.QuestionId == questionId {
 			return true
