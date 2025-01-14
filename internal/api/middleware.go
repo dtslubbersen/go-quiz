@@ -43,7 +43,7 @@ func (a *Application) jwtTokenMiddleware(next http.Handler) http.Handler {
 
 		ctx := r.Context()
 
-		user, err := a.storage.Users().GetById(store.UserId(userId))
+		user, err := a.storage.GetUserById(store.UserId(userId))
 		if err != nil {
 			a.unauthorized(w, r, err)
 			return

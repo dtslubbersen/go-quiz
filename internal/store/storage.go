@@ -10,59 +10,44 @@ var (
 )
 
 type Storage interface {
-	Questions() QuestionStore
-	Quizzes() QuizStore
-	Results() ResultStore
-	UserAnswers() UserAnswerStore
-	Users() UserStore
+	GetQuizById(quizId QuizId) (*Quiz, error)
+	ListQuizzes() ([]*Quiz, error)
+	UpdateQuiz(*Quiz) error
+
+	AddResult(*Result) (*Result, error)
+	GetResultByQuizAndUserId(QuizId, UserId) (*Result, error)
+
+	AddUserAnswer(*UserAnswer) error
+	ListUserAnswersByQuizId(QuizId) ([]*UserAnswer, error)
+	ListUserAnswersByUserAndQuizId(UserId, QuizId) ([]*UserAnswer, error)
+
+	GetUserByEmail(string) (*User, error)
+	GetUserById(UserId) (*User, error)
 }
 
 type InMemoryStorage struct {
-	questions   QuestionStore
-	quizzes     QuizStore
-	results     ResultStore
-	userAnswers UserAnswerStore
-	users       UserStore
-}
-
-func (s *InMemoryStorage) Questions() QuestionStore {
-	return s.questions
-}
-
-func (s *InMemoryStorage) Quizzes() QuizStore {
-	return s.quizzes
-}
-
-func (s *InMemoryStorage) Results() ResultStore {
-	return s.results
-}
-
-func (s *InMemoryStorage) UserAnswers() UserAnswerStore {
-	return s.userAnswers
-}
-
-func (s *InMemoryStorage) Users() UserStore {
-	return s.users
+	Quizzes     *InMemoryQuizStore
+	Results     *InMemoryResultStore
+	UserAnswers *InMemoryUserAnswerStore
+	Users       *InMemoryUserStore
 }
 
 func NewStorage(seed *Seed) Storage {
+
 	return &InMemoryStorage{
-		questions: &InMemoryQuestionStore{
-			questions: seed.questions,
+		Quizzes: &InMemoryQuizStore{
+			entities: seed.quizzes,
 		},
-		quizzes: &InMemoryQuizStore{
-			quizzes: seed.quizzes,
+		Results: &InMemoryResultStore{
+			items:  make(map[ResultId]*Result),
+			nextId: 1,
 		},
-		results: &InMemoryResultStore{
-			results: make(map[ResultId]*Result),
-			nextId:  1,
+		UserAnswers: &InMemoryUserAnswerStore{
+			items:  seed.userAnswers,
+			nextId: 55,
 		},
-		userAnswers: &InMemoryUserAnswerStore{
-			userAnswers: seed.userAnswers,
-			nextId:      55,
-		},
-		users: &InMemoryUserStore{
-			users: seed.users,
+		Users: &InMemoryUserStore{
+			items: seed.users,
 		},
 	}
 }

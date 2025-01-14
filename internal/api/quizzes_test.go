@@ -22,15 +22,15 @@ func TestGetQuizByIdApi(t *testing.T) {
 	tests := []struct {
 		name             string
 		quizId           store.QuizId
-		assert           func(container *MockContainer)
+		assert           func(storage *mockStore.MockStorage)
 		setAuthorization func(t *testing.T, request *http.Request, authenticator auth.Authenticator)
 		validateResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
 	}{
 		{
 			name:   "OK",
 			quizId: quiz.Id,
-			assert: func(container *MockContainer) {
-				container.MockQuizStore.EXPECT().GetById(gomock.Eq(quiz.Id)).Times(1).Return(&quiz, nil)
+			assert: func(storage *mockStore.MockStorage) {
+				storage.EXPECT().GetQuizById(gomock.Eq(quiz.Id)).Times(1).Return(&quiz, nil)
 			},
 			setAuthorization: func(t *testing.T, request *http.Request, authenticator auth.Authenticator) {
 				token, err := authenticator.GenerateToken(nil)
@@ -49,12 +49,12 @@ func TestGetQuizByIdApi(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			container := newMockContainer(ctrl)
-			api := newTestApplication(t, container.MockStorage)
+			storage := mockStore.NewMockStorage(ctrl)
+			api := newTestApplication(t, storage)
 			recorder := httptest.NewRecorder()
-			test.assert(container)
+			test.assert(storage)
 
-			url := fmt.Sprintf("/quizes/%d", test.quizId)
+			url := fmt.Sprintf("/api/v1/quizzes/%d", test.quizId)
 			request, err := http.NewRequest(http.MethodGet, url, nil)
 			require.NoError(t, err)
 
@@ -67,7 +67,7 @@ func TestGetQuizByIdApi(t *testing.T) {
 
 func TestGetQuizzesApi(t *testing.T) {
 	quizCount := 10
-	quizzes := make([]store.Quiz, quizCount)
+	quizzes := make([]*store.Quiz, quizCount)
 
 	for i := 0; i < quizCount; i++ {
 		quizzes[i] = newTestQuiz(t)
@@ -75,16 +75,14 @@ func TestGetQuizzesApi(t *testing.T) {
 
 	tests := []struct {
 		name             string
-		assert           func(container *MockContainer)
+		assert           func(storage *mockStore.MockStorage)
 		setAuthorization func(t *testing.T, request *http.Request, authenticator auth.Authenticator)
 		validateResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
 	}{
 		{
 			name: "OK",
-			assert: func(container *MockContainer) {
-				container.MockStorage.EXPECT().Quizzes().Times(1).Return(quizzes, nil)
-
-				//container.MockQuizStore.EXPECT().GetAll().Times(1).Return(&quizzes, nil)
+			assert: func(storage *mockStore.MockStorage) {
+				storage.EXPECT().ListQuizzes().Times(1).Return(quizzes, nil)
 			},
 			setAuthorization: func(t *testing.T, request *http.Request, authenticator auth.Authenticator) {
 				token, err := authenticator.GenerateToken(nil)
@@ -103,12 +101,12 @@ func TestGetQuizzesApi(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			container := newMockContainer(ctrl)
-			api := newTestApplication(t, container.MockStorage)
+			storage := mockStore.NewMockStorage(ctrl)
+			api := newTestApplication(t, storage)
 			recorder := httptest.NewRecorder()
-			test.assert(container)
+			test.assert(storage)
 
-			url := "/quizzes"
+			url := "/api/v1/quizzes"
 			request, err := http.NewRequest(http.MethodGet, url, nil)
 			require.NoError(t, err)
 
@@ -119,7 +117,7 @@ func TestGetQuizzesApi(t *testing.T) {
 	}
 }
 
-func requireQuizResponseBodyMatch(t *testing.T, body *bytes.Buffer, expectedQuiz store.Quiz) {
+func requireQuizResponseBodyMatch(t *testing.T, body *bytes.Buffer, expectedQuiz *store.Quiz) {
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 
@@ -129,7 +127,7 @@ func requireQuizResponseBodyMatch(t *testing.T, body *bytes.Buffer, expectedQuiz
 	require.Equal(t, expectedQuiz, response.Data)
 }
 
-func requireQuizzesResponseBodyMatch(t *testing.T, body *bytes.Buffer, expectedQuizzes []store.Quiz) {
+func requireQuizzesResponseBodyMatch(t *testing.T, body *bytes.Buffer, expectedQuizzes []*store.Quiz) {
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 
@@ -139,8 +137,8 @@ func requireQuizzesResponseBodyMatch(t *testing.T, body *bytes.Buffer, expectedQ
 	require.Equal(t, expectedQuizzes, response.Data)
 }
 
-func newTestQuiz(t *testing.T) store.Quiz {
-	quiz := store.Quiz{
+func newTestQuiz(t *testing.T) *store.Quiz {
+	quiz := &store.Quiz{
 		Id:          store.QuizId(util.RandomInt(1, 128)),
 		Title:       util.RandomString(8),
 		Description: util.RandomString(32),
@@ -167,37 +165,4 @@ func newTestUser(t *testing.T) (store.User, string) {
 	require.NoError(t, err)
 
 	return user, password
-}
-
-type MockContainer struct {
-	MockStorage         *mockStore.MockStorage
-	MockQuizStore       *mockStore.MockQuizStore
-	MockQuestionStore   *mockStore.MockQuestionStore
-	MockResultStore     *mockStore.MockResultStore
-	MockUserStore       *mockStore.MockUserStore
-	MockUserAnswerStore *mockStore.MockUserAnswerStore
-}
-
-func newMockContainer(ctrl *gomock.Controller) *MockContainer {
-	mockStorage := mockStore.NewMockStorage(ctrl)
-	mockQuizStore := mockStore.NewMockQuizStore(ctrl)
-	mockQuestionStore := mockStore.NewMockQuestionStore(ctrl)
-	mockResultStore := mockStore.NewMockResultStore(ctrl)
-	mockUserStore := mockStore.NewMockUserStore(ctrl)
-	mockUserAnswerStore := mockStore.NewMockUserAnswerStore(ctrl)
-
-	mockStorage.EXPECT().Quizzes().Return(mockQuizStore).AnyTimes()
-	mockStorage.EXPECT().Questions().Return(mockQuestionStore).AnyTimes()
-	mockStorage.EXPECT().Results().Return(mockResultStore).AnyTimes()
-	mockStorage.EXPECT().Users().Return(mockUserStore).AnyTimes()
-	mockStorage.EXPECT().UserAnswers().Return(mockUserAnswerStore).AnyTimes()
-
-	return &MockContainer{
-		MockStorage:         mockStorage,
-		MockQuizStore:       mockQuizStore,
-		MockQuestionStore:   mockQuestionStore,
-		MockResultStore:     mockResultStore,
-		MockUserStore:       mockUserStore,
-		MockUserAnswerStore: mockUserAnswerStore,
-	}
 }
