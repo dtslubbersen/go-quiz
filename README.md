@@ -1,14 +1,12 @@
 # go-quiz
 
-## To-do
-* Add unit tests for storage, auth, and request handlers
-
 ## Getting started
 1. Start the API => `go run ./cmd/go-quiz api`
 2. Start the CLI => `go run ./cmd/go-quiz cli`
 3. Answer a quiz!
 
 ## What can be improved?
+* Add more test coverage
 * Replace "primary keys" of structs like `QuizId` and `QuestionId` with UUIDs
 * Containerise applications
 * Request handlers are big and hard to test (so many cases), move business logic from request handlers to service layer
