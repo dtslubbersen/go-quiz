@@ -35,9 +35,7 @@ func (a *Application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	if err := a.dataResponse(w, http.StatusOK, quizzes); err != nil {
-		a.internalServerError(w, r, err)
-	}
+	a.dataResponse(w, r, http.StatusOK, quizzes)
 }
 
 // GetQuizById godoc
@@ -56,10 +54,7 @@ func (a *Application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) 
 //	@Router			/quizzes/{quizId} [get]
 func (a *Application) getQuizByIdHandler(w http.ResponseWriter, r *http.Request) {
 	quiz := getQuizFromCtx(r)
-
-	if err := a.dataResponse(w, http.StatusOK, quiz); err != nil {
-		a.internalServerError(w, r, err)
-	}
+	a.dataResponse(w, r, http.StatusOK, quiz)
 }
 
 type SubmitQuizAnswersPayload struct {
@@ -160,9 +155,7 @@ func (a *Application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	if err := a.dataResponse(w, http.StatusOK, newResult); err != nil {
-		a.internalServerError(w, r, err)
-	}
+	a.dataResponse(w, r, http.StatusOK, newResult)
 }
 
 func calculatePercentileRank(quiz *store.Quiz, correctAnswersCount int) float64 {
@@ -214,9 +207,7 @@ func (a *Application) getQuizResultsHandler(w http.ResponseWriter, r *http.Reque
 
 	result.PercentileRank = calculatePercentileRank(quiz, result.CorrectAnswersCount)
 
-	if err := a.dataResponse(w, http.StatusOK, result); err != nil {
-		a.internalServerError(w, r, err)
-	}
+	a.dataResponse(w, r, http.StatusOK, result)
 }
 
 func (a *Application) quizzesContextMiddleware(next http.Handler) http.Handler {

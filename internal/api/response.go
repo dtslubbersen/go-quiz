@@ -10,13 +10,18 @@ type Response struct {
 	Error      string      `json:"error,omitempty"`
 }
 
-func (a *Application) dataResponse(w http.ResponseWriter, statusCode int, data any) error {
-	return writeJson(w, statusCode, &Response{StatusCode: statusCode, Data: data})
+func (a *Application) dataResponse(w http.ResponseWriter, r *http.Request, statusCode int, data any) {
+	if err := writeJson(w, statusCode, &Response{StatusCode: statusCode, Data: data}); err != nil {
+		a.internalServerError(w, r, err)
+	}
 }
 
-func (a *Application) errorResponse(w http.ResponseWriter, r *http.Request, statusCode int, message string) error {
+func (a *Application) errorResponse(w http.ResponseWriter, r *http.Request, statusCode int, message string) {
 	a.logger.Errorw("error", "method", r.Method, "path", r.URL.Path, "error", message)
-	return writeJson(w, statusCode, &Response{StatusCode: statusCode, Error: message})
+
+	if err := writeJson(w, statusCode, &Response{StatusCode: statusCode, Error: message}); err != nil {
+		a.internalServerError(w, r, err)
+	}
 }
 
 func (a *Application) internalServerError(w http.ResponseWriter, r *http.Request, err error) {
