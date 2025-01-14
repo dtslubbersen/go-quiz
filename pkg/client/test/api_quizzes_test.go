@@ -11,10 +11,10 @@ package openapi
 
 import (
 	"context"
+	openapiclient "github.com/dtslubbersen/go-quiz/pkg/client"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
-	openapiclient "github.com/GIT_USER_ID/GIT_REPO_ID"
 )
 
 func Test_openapi_QuizzesAPIService(t *testing.T) {
@@ -24,19 +24,18 @@ func Test_openapi_QuizzesAPIService(t *testing.T) {
 
 	t.Run("Test QuizzesAPIService QuizzesGet", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.QuizzesAPI.QuizzesGet(context.Background()).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
 		assert.Equal(t, 200, httpRes.StatusCode)
-
 	})
 
 	t.Run("Test QuizzesAPIService QuizzesQuizIdGet", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var quizId int32
 
@@ -50,7 +49,7 @@ func Test_openapi_QuizzesAPIService(t *testing.T) {
 
 	t.Run("Test QuizzesAPIService QuizzesQuizIdResultsGet", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var quizId int32
 
@@ -64,7 +63,7 @@ func Test_openapi_QuizzesAPIService(t *testing.T) {
 
 	t.Run("Test QuizzesAPIService QuizzesQuizIdSubmitPost", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var quizId int32
 

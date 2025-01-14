@@ -8,7 +8,7 @@ gen-docs:
 
 .PHONY: gen-client
 gen-client:
-	@openapi-generator-cli generate -i ./docs/swagger.yaml -g go -o ./pkg/client
+	@openapi-generator-cli generate -i ./docs/swagger.yaml -g go -o ./pkg/client  --git-repo-id go-quiz/pkg/client --git-user-id dtslubbersen
 	@rm -f ./pkg/client/go.mod  # Remove the generated go.mod file
 
 .PHONY: docker-build

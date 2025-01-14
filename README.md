@@ -1,4 +1,5 @@
 # go-quiz
+This project is the first I've built in `go`, I spent approximately 25 hours on it.
 
 ## Getting started
 1. Start the API => `go run ./cmd/go-quiz api`
