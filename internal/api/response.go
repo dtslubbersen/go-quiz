@@ -20,21 +20,26 @@ func (a *Application) errorResponse(w http.ResponseWriter, r *http.Request, stat
 }
 
 func (a *Application) internalServerError(w http.ResponseWriter, r *http.Request, err error) {
+	a.logger.Errorw("internal server error", "method", r.Method, "path", r.URL.Path, "error", err)
 	_ = writeJson(w, http.StatusInternalServerError, &Response{StatusCode: http.StatusInternalServerError, Error: "internal server error"})
 }
 
 func (a *Application) forbidden(w http.ResponseWriter, r *http.Request, err error) {
+	a.logger.Errorw("forbidden", "method", r.Method, "path", r.URL.Path, "error", err)
 	_ = writeJson(w, http.StatusForbidden, &Response{StatusCode: http.StatusForbidden, Error: err.Error()})
 }
 
 func (a *Application) badRequest(w http.ResponseWriter, r *http.Request, err error) {
+	a.logger.Errorw("bad request", "method", r.Method, "path", r.URL.Path, "error", err)
 	_ = writeJson(w, http.StatusBadRequest, &Response{StatusCode: http.StatusBadRequest, Error: err.Error()})
 }
 
 func (a *Application) notFound(w http.ResponseWriter, r *http.Request, err error) {
+	a.logger.Errorw("not found", "method", r.Method, "path", r.URL.Path, "error", err)
 	_ = writeJson(w, http.StatusNotFound, &Response{StatusCode: http.StatusNotFound, Error: err.Error()})
 }
 
 func (a *Application) unauthorized(w http.ResponseWriter, r *http.Request, err error) {
+	a.logger.Errorw("unauthorized", "method", r.Method, "path", r.URL.Path, "error", err)
 	_ = writeJson(w, http.StatusUnauthorized, &Response{StatusCode: http.StatusUnauthorized, Error: err.Error()})
 }
