@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/dtslubbersen/go-quiz/internal/store"
 	"github.com/go-chi/chi/v5"
-	"go-quiz/internal/store"
 	"math"
 	"net/http"
 	"strconv"
@@ -27,7 +27,7 @@ const quizCtxKey quizKey = "post"
 //	@Failure		500	{object}	Response{error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes [get]
-func (a *application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) {
+func (a *Application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) {
 	quizzes, err := a.store.Quizzes.GetAll()
 
 	if err != nil {
@@ -54,7 +54,7 @@ func (a *application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) 
 //	@Failure		500		{object}	Response{error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes/{quizId} [get]
-func (a *application) getQuizByIdHandler(w http.ResponseWriter, r *http.Request) {
+func (a *Application) getQuizByIdHandler(w http.ResponseWriter, r *http.Request) {
 	quiz := getQuizFromCtx(r)
 
 	if err := a.dataResponse(w, http.StatusOK, quiz); err != nil {
@@ -83,7 +83,7 @@ type SubmitQuizAnswersPayload struct {
 //	@Failure		500		{object}	Response{error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes/{quizId}/submit [post]
-func (a *application) submitAnswersHandler(w http.ResponseWriter, r *http.Request) {
+func (a *Application) submitAnswersHandler(w http.ResponseWriter, r *http.Request) {
 	var payload SubmitQuizAnswersPayload
 
 	if err := readJson(w, r, &payload); err != nil {
@@ -196,7 +196,7 @@ func calculatePercentileRank(quiz *store.Quiz, correctAnswersCount int) float64 
 //	@Failure		500		{object}	Response{error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes/{quizId}/results [get]
-func (a *application) getQuizResultsHandler(w http.ResponseWriter, r *http.Request) {
+func (a *Application) getQuizResultsHandler(w http.ResponseWriter, r *http.Request) {
 	quiz, user := getQuizFromCtx(r), getUserFromCtx(r)
 	result, err := a.store.Results.GetByQuizAndUserId(quiz.Id, user.Id)
 
@@ -219,7 +219,7 @@ func (a *application) getQuizResultsHandler(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (a *application) quizzesContextMiddleware(next http.Handler) http.Handler {
+func (a *Application) quizzesContextMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		idParameter := chi.URLParam(r, "quizId")
 		id, err := strconv.ParseInt(idParameter, 10, 64)

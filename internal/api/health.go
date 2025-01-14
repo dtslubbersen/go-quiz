@@ -1,8 +1,10 @@
 package api
 
-import "net/http"
+import (
+	"net/http"
+)
 
-func (a *application) healthCheckHandler(w http.ResponseWriter, r *http.Request) {
+func (a *Application) healthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]string{
 		"status":  "ok",
 		"version": version,

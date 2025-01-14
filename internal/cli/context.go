@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	openapi "github.com/dtslubbersen/go-quiz/pkg/client"
 	"github.com/manifoldco/promptui"
-	openapi "go-quiz/pkg/client"
 )
 
 type QuizContext struct {

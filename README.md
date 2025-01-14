@@ -2,14 +2,11 @@
 
 ## To-do
 * Add unit tests for storage, auth, and request handlers
-* Updated int64 ids with uuid
 
 ## Getting started
-Unfortunately I ran into issues generating executables (see cmd/api/Dockerfile). As a result one must open 2 terminals to run the project:
-1. In the first execute `go run .`, this will start the API
-2. Navigate to `main.go`, comment line 8, uncomment line 9 and execute `go run . start` to begin the interactive CLI
-
-I could have circumvented this by throwing both applications in the main package but that didn't feel like an architecturally sound decision. Plus this wouldn't have been an issue if the WSL dev experience was not a PITA :)
+1. Start the API => `go run ./cmd/go-quiz api`
+2. Start the CLI => `go run ./cmd/go-quiz cli`
+3. Answer a quiz!
 
 ## Highlights
 * Robust API designed for expandability
@@ -18,6 +15,8 @@ I could have circumvented this by throwing both applications in the main package
 * Use of stores for data allowing to easily implement a database
 
 ## What can be improved?
+* Replace "primary keys" of structs like `QuizId` and `QuestionId` with UUIDs
+* Containerise applications
 * Move business logic from request handlers to service layer
 * Integrate database, there are some bugs caused by not having transactions
 * Use a `.env` file (or similar) to store configuration values that are currently hard coded
@@ -25,6 +24,3 @@ I could have circumvented this by throwing both applications in the main package
 * Add rate limiting to API
 * Explore concurrency to optimise request execution time
 * Add caching
-
-## Known issues
-* Generated client has different types than API for float and int, this causes some weird rank percentile calculations

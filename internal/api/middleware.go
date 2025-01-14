@@ -3,14 +3,14 @@ package api
 import (
 	"context"
 	"fmt"
+	"github.com/dtslubbersen/go-quiz/internal/store"
 	"github.com/golang-jwt/jwt/v5"
-	"go-quiz/internal/store"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
-func (a *application) jwtTokenMiddleware(next http.Handler) http.Handler {
+func (a *Application) jwtTokenMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 

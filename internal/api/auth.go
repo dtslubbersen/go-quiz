@@ -2,8 +2,8 @@ package api
 
 import (
 	"errors"
+	"github.com/dtslubbersen/go-quiz/internal/store"
 	"github.com/golang-jwt/jwt/v5"
-	"go-quiz/internal/store"
 	"net/http"
 	"time"
 )
@@ -37,7 +37,7 @@ type UserResponse struct {
 //	@Failure		401		{object}	Response{error=string}
 //	@Failure		500		{object}	Response{error=string}
 //	@Router			/auth/token [post]
-func (a *application) createTokenHandler(w http.ResponseWriter, r *http.Request) {
+func (a *Application) createTokenHandler(w http.ResponseWriter, r *http.Request) {
 	var payload CreateTokenPayload
 
 	if err := readJson(w, r, &payload); err != nil {
@@ -69,11 +69,11 @@ func (a *application) createTokenHandler(w http.ResponseWriter, r *http.Request)
 
 	claims := jwt.MapClaims{
 		"sub": user.Id,
-		"exp": time.Now().Add(a.configuration.authentication.expireAfter).Unix(),
+		"exp": time.Now().Add(a.cfg.authentication.expireAfter).Unix(),
 		"iat": time.Now().Unix(),
 		"nbf": time.Now().Unix(),
-		"iss": a.configuration.authentication.iss,
-		"aud": a.configuration.authentication.iss,
+		"iss": a.cfg.authentication.iss,
+		"aud": a.cfg.authentication.iss,
 	}
 
 	token, err := a.authenticator.GenerateToken(claims)

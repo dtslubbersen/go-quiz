@@ -4,50 +4,85 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-quiz/internal/auth"
-	"go-quiz/internal/store"
-	"os"
-	"os/signal"
-	"syscall"
-
+	swaggerDocs "github.com/dtslubbersen/go-quiz/docs"
+	"github.com/dtslubbersen/go-quiz/internal/auth"
+	"github.com/dtslubbersen/go-quiz/internal/store"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"go.uber.org/zap"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	httpSwagger "github.com/swaggo/http-swagger/v2"
-	swaggerDocs "go-quiz/docs"
 )
 
-type application struct {
+const version = "1.0.0"
+
+type Application struct {
 	authenticator auth.Authenticator
-	configuration appConfig
+	cfg           apiCfg
 	logger        *zap.SugaredLogger
 	store         store.Storage
 }
 
-type appConfig struct {
-	apiUrl         string
-	listenAddress  string
-	authentication authConfig
+func NewApplication(ctx context.Context, logger *zap.SugaredLogger) *Application {
+	cfg := apiCfg{
+		apiUrl:        "localhost:8080",
+		listenAddress: ":8080",
+		authentication: authCfg{
+			secret:      "notverysecret",
+			expireAfter: time.Hour * 24 * 7, // 7 days
+			iss:         "go-quiz",
+		},
+	}
+	jwtAuthenticator := auth.NewJwtAuthenticator(
+		cfg.authentication.secret,
+		cfg.authentication.iss,
+		cfg.authentication.iss,
+	)
+
+	seed := store.NewSeed()
+
+	logger.Infoln("seed data extracted from disk")
+
+	store := store.NewStorage(seed)
+
+	logger.Infoln("store initialized")
+
+	api := &Application{
+		authenticator: jwtAuthenticator,
+		cfg:           cfg,
+		logger:        logger,
+		store:         store,
+	}
+
+	return api
 }
 
-type authConfig struct {
+type apiCfg struct {
+	apiUrl         string
+	listenAddress  string
+	authentication authCfg
+}
+
+type authCfg struct {
 	secret      string
 	expireAfter time.Duration
 	iss         string
 }
 
-func (a *application) createRouter() http.Handler {
+func (a *Application) newRouter() http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{a.configuration.apiUrl},
+		AllowedOrigins:   []string{a.cfg.apiUrl},
 		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 		ExposedHeaders:   []string{"Link"},
@@ -57,7 +92,7 @@ func (a *application) createRouter() http.Handler {
 
 	r.Use(middleware.Timeout(5 * time.Second))
 
-	docsUrl := fmt.Sprintf("%s/swagger/doc.json", a.configuration.listenAddress)
+	docsUrl := fmt.Sprintf("%s/swagger/doc.json", a.cfg.listenAddress)
 	r.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL(docsUrl)))
 
 	r.Route("/api/v1", func(r chi.Router) {
@@ -85,14 +120,14 @@ func (a *application) createRouter() http.Handler {
 	return r
 }
 
-func (a *application) run(mux http.Handler) error {
+func (a *Application) Run() error {
 	swaggerDocs.SwaggerInfo.Version = version
-	swaggerDocs.SwaggerInfo.Host = a.configuration.apiUrl
+	swaggerDocs.SwaggerInfo.Host = a.cfg.apiUrl
 	swaggerDocs.SwaggerInfo.BasePath = "/api/v1"
 
 	server := &http.Server{
-		Addr:         a.configuration.listenAddress,
-		Handler:      mux,
+		Addr:         a.cfg.listenAddress,
+		Handler:      a.newRouter(),
 		WriteTimeout: time.Second * 30,
 		ReadTimeout:  time.Second * 10,
 		IdleTimeout:  time.Minute,
@@ -126,7 +161,7 @@ func (a *application) run(mux http.Handler) error {
 		return err
 	}
 
-	a.logger.Infow("server has stopped", "addr", a.configuration.listenAddress)
+	a.logger.Infow("server has stopped", "addr", a.cfg.listenAddress)
 
 	return nil
 }

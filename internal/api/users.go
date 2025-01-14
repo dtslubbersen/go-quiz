@@ -1,7 +1,7 @@
 package api
 
 import (
-	"go-quiz/internal/store"
+	"github.com/dtslubbersen/go-quiz/internal/store"
 	"net/http"
 )
 

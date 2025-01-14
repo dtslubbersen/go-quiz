@@ -1,4 +1,4 @@
-module go-quiz
+module github.com/dtslubbersen/go-quiz
 
 go 1.22.2
 
