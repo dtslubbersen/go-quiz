@@ -10,7 +10,5 @@ func (a *Application) healthCheckHandler(w http.ResponseWriter, r *http.Request)
 		"version": version,
 	}
 
-	if err := a.dataResponse(w, http.StatusOK, data); err != nil {
-		a.internalServerError(w, r, err)
-	}
+	a.dataResponse(w, r, http.StatusOK, data)
 }

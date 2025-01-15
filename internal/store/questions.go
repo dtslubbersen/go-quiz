@@ -14,18 +14,18 @@ type Question struct {
 
 type Answer string
 
-type QuestionStore struct {
-	mu        sync.Mutex
-	questions map[QuestionId]*Question
+type InMemoryQuestionStore struct {
+	mu    sync.Mutex
+	items map[QuestionId]*Question
 }
 
-func (s *QuestionStore) GetByQuizId(quizId QuizId) ([]*Question, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func (s *InMemoryStorage) ListQuestionsByQuizId(quizId QuizId) ([]*Question, error) {
+	s.Questions.mu.Lock()
+	defer s.Questions.mu.Unlock()
 
 	var questions []*Question
 
-	for _, question := range s.questions {
+	for _, question := range s.Questions.items {
 		if question.QuizId == quizId {
 			questions = append(questions, question)
 		}

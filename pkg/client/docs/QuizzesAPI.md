@@ -214,7 +214,7 @@ Name | Type | Description  | Notes
 
 ## QuizzesQuizIdSubmitPost
 
-> QuizzesQuizIdResultsGet200Response QuizzesQuizIdSubmitPost(ctx, quizId).Payload(payload).Execute()
+> QuizzesQuizIdSubmitPost200Response QuizzesQuizIdSubmitPost(ctx, quizId).Payload(payload).Execute()
 
 Submits answers for a quiz
 
@@ -234,7 +234,7 @@ import (
 
 func main() {
 	quizId := int32(56) // int32 | Quiz ID
-	payload := *openapiclient.NewApiSubmitQuizAnswersPayload([]openapiclient.ApiSubmitQuizAnswersPayloadAnswersInner{*openapiclient.NewApiSubmitQuizAnswersPayloadAnswersInner(int32(123), int32(123))}) // ApiSubmitQuizAnswersPayload | User's answers
+	payload := *openapiclient.NewQuizzesQuizIdSubmitPostRequest([]openapiclient.ApiQuestionAnswerPayload{*openapiclient.NewApiQuestionAnswerPayload(int32(123), int32(123))}) // QuizzesQuizIdSubmitPostRequest | User's answers
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
@@ -243,7 +243,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error when calling `QuizzesAPI.QuizzesQuizIdSubmitPost``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `QuizzesQuizIdSubmitPost`: QuizzesQuizIdResultsGet200Response
+	// response from `QuizzesQuizIdSubmitPost`: QuizzesQuizIdSubmitPost200Response
 	fmt.Fprintf(os.Stdout, "Response from `QuizzesAPI.QuizzesQuizIdSubmitPost`: %v\n", resp)
 }
 ```
@@ -264,11 +264,11 @@ Other parameters are passed through a pointer to a apiQuizzesQuizIdSubmitPostReq
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 
- **payload** | [**ApiSubmitQuizAnswersPayload**](ApiSubmitQuizAnswersPayload.md) | User&#39;s answers | 
+ **payload** | [**QuizzesQuizIdSubmitPostRequest**](QuizzesQuizIdSubmitPostRequest.md) | User&#39;s answers | 
 
 ### Return type
 
-[**QuizzesQuizIdResultsGet200Response**](QuizzesQuizIdResultsGet200Response.md)
+[**QuizzesQuizIdSubmitPost200Response**](QuizzesQuizIdSubmitPost200Response.md)
 
 ### Authorization
 

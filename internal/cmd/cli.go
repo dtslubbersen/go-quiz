@@ -40,6 +40,10 @@ func CliCmd(ctx context.Context) *cobra.Command {
 			if err := quizContext.SubmitAnswers(); err != nil {
 				log.Panicf("Failed to submit answers %v", err)
 			}
+
+			if err := quizContext.DisplayResults(); err != nil {
+				log.Panicf("Failed to display results %v", err)
+			}
 		},
 	}
 

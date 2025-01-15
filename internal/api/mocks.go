@@ -9,19 +9,20 @@ import (
 	"testing"
 )
 
-func NewMockApplication(t *testing.T, cfg apiCfg) *Application {
-	t.Helper()
-
+func newTestApplication(t *testing.T, storage store.Storage) *Application {
 	authenticator := &auth.MockAuthenticator{}
+	cfg := apiCfg{}
 	logger := zap.NewNop().Sugar()
-	storage := store.NewMockStorage()
 
-	return &Application{
+	api := &Application{
 		authenticator: authenticator,
 		cfg:           cfg,
 		logger:        logger,
 		storage:       storage,
 	}
+
+	api.setupRouter()
+	return api
 }
 
 func executeRequest(req *http.Request, router http.Handler) *httptest.ResponseRecorder {

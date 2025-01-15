@@ -15,36 +15,36 @@ type Result struct {
 	PercentileRank      float64  `json:"top_percentile"`
 }
 
-type ResultStore struct {
-	mu      sync.Mutex
-	results map[ResultId]*Result
-	nextId  ResultId
+type InMemoryResultStore struct {
+	mu     sync.Mutex
+	items  map[ResultId]*Result
+	nextId ResultId
 }
 
-func (s *ResultStore) Add(result *Result) (*Result, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func (s *InMemoryStorage) AddResult(result *Result) (*Result, error) {
+	s.Results.mu.Lock()
+	defer s.Results.mu.Unlock()
 
-	if _, err := s.getByCompositeKey(result.QuizId, result.UserId); err == nil {
+	if _, err := s.Results.getByCompositeKey(result.QuizId, result.UserId); err == nil {
 		return nil, DuplicateEntryError
 	}
 
-	result.Id = s.nextId
-	s.results[result.Id] = result
-	s.nextId++
+	result.Id = s.Results.nextId
+	s.Results.items[result.Id] = result
+	s.Results.nextId++
 	return result, nil
 
 }
 
-func (s *ResultStore) GetByQuizAndUserId(quizId QuizId, userId UserId) (*Result, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func (s *InMemoryStorage) GetResultByQuizAndUserId(quizId QuizId, userId UserId) (*Result, error) {
+	s.Results.mu.Lock()
+	defer s.Results.mu.Unlock()
 
-	return s.getByCompositeKey(quizId, userId)
+	return s.Results.getByCompositeKey(quizId, userId)
 }
 
-func (s *ResultStore) getByCompositeKey(quizId QuizId, userId UserId) (*Result, error) {
-	for _, result := range s.results {
+func (s *InMemoryResultStore) getByCompositeKey(quizId QuizId, userId UserId) (*Result, error) {
+	for _, result := range s.items {
 		if result.QuizId == quizId && result.UserId == userId {
 			return result, nil
 		}

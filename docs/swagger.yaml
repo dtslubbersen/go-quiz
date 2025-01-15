@@ -15,6 +15,16 @@ definitions:
     - email
     - password
     type: object
+  api.QuestionAnswerPayload:
+    properties:
+      answer_index:
+        type: integer
+      question_id:
+        type: integer
+    required:
+    - answer_index
+    - question_id
+    type: object
   api.Response:
     properties:
       data: {}
@@ -27,15 +37,7 @@ definitions:
     properties:
       answers:
         items:
-          properties:
-            answer_index:
-              type: integer
-            question_id:
-              type: integer
-          required:
-          - answer_index
-          - question_id
-          type: object
+          $ref: '#/definitions/api.QuestionAnswerPayload'
         type: array
     required:
     - answers
@@ -185,7 +187,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Fetches a list of all quizzes from the in memory storage
+      description: Fetches a list of all quizzes from the in memory store
       produces:
       - application/json
       responses:
@@ -199,6 +201,8 @@ paths:
                   items:
                     $ref: '#/definitions/store.Quiz'
                   type: array
+                status_code:
+                  type: integer
               type: object
         "400":
           description: Bad Request
@@ -208,6 +212,8 @@ paths:
             - properties:
                 error:
                   type: string
+                status_code:
+                  type: integer
               type: object
         "500":
           description: Internal Server Error
@@ -217,6 +223,8 @@ paths:
             - properties:
                 error:
                   type: string
+                status_code:
+                  type: integer
               type: object
       security:
       - BearerAuth: []
@@ -227,7 +235,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Fetches a specific quiz using its ID from the in-memory storage
+      description: Fetches a specific quiz using its ID from the in-memory store
       parameters:
       - description: Quiz ID
         in: path
@@ -245,6 +253,8 @@ paths:
             - properties:
                 data:
                   $ref: '#/definitions/store.Quiz'
+                status_code:
+                  type: integer
               type: object
         "400":
           description: Bad Request
@@ -254,6 +264,8 @@ paths:
             - properties:
                 error:
                   type: string
+                status_code:
+                  type: integer
               type: object
         "404":
           description: Not Found
@@ -263,6 +275,8 @@ paths:
             - properties:
                 error:
                   type: string
+                status_code:
+                  type: integer
               type: object
         "500":
           description: Internal Server Error
@@ -272,6 +286,8 @@ paths:
             - properties:
                 error:
                   type: string
+                status_code:
+                  type: integer
               type: object
       security:
       - BearerAuth: []
@@ -300,6 +316,8 @@ paths:
             - properties:
                 data:
                   $ref: '#/definitions/store.Result'
+                status_code:
+                  type: integer
               type: object
         "400":
           description: Bad Request
@@ -309,6 +327,8 @@ paths:
             - properties:
                 error:
                   type: string
+                status_code:
+                  type: integer
               type: object
         "404":
           description: Not Found
@@ -318,6 +338,8 @@ paths:
             - properties:
                 error:
                   type: string
+                status_code:
+                  type: integer
               type: object
         "500":
           description: Internal Server Error
@@ -327,6 +349,8 @@ paths:
             - properties:
                 error:
                   type: string
+                status_code:
+                  type: integer
               type: object
       security:
       - BearerAuth: []
@@ -349,7 +373,14 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/api.SubmitQuizAnswersPayload'
+          allOf:
+          - $ref: '#/definitions/api.SubmitQuizAnswersPayload'
+          - properties:
+              answers:
+                items:
+                  $ref: '#/definitions/api.QuestionAnswerPayload'
+                type: array
+            type: object
       produces:
       - application/json
       responses:
@@ -359,8 +390,8 @@ paths:
             allOf:
             - $ref: '#/definitions/api.Response'
             - properties:
-                data:
-                  $ref: '#/definitions/store.Result'
+                status_code:
+                  type: integer
               type: object
         "400":
           description: Bad Request
@@ -370,6 +401,8 @@ paths:
             - properties:
                 error:
                   type: string
+                status_code:
+                  type: integer
               type: object
         "500":
           description: Internal Server Error
@@ -379,6 +412,8 @@ paths:
             - properties:
                 error:
                   type: string
+                status_code:
+                  type: integer
               type: object
       security:
       - BearerAuth: []

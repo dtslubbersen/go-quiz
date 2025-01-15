@@ -26,6 +26,7 @@ type Application struct {
 	authenticator auth.Authenticator
 	cfg           apiCfg
 	logger        *zap.SugaredLogger
+	router        *chi.Mux
 	storage       store.Storage
 }
 
@@ -60,6 +61,8 @@ func NewApplication(ctx context.Context, logger *zap.SugaredLogger) *Application
 		storage:       storage,
 	}
 
+	api.setupRouter()
+
 	return api
 }
 
@@ -75,13 +78,13 @@ type authCfg struct {
 	iss         string
 }
 
-func (a *Application) newRouter() http.Handler {
-	r := chi.NewRouter()
+func (a *Application) setupRouter() {
+	chiRouter := chi.NewRouter()
 
-	r.Use(middleware.RequestID)
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
-	r.Use(cors.Handler(cors.Options{
+	chiRouter.Use(middleware.RequestID)
+	chiRouter.Use(middleware.Logger)
+	chiRouter.Use(middleware.Recoverer)
+	chiRouter.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{a.cfg.apiUrl},
 		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
@@ -90,12 +93,12 @@ func (a *Application) newRouter() http.Handler {
 		MaxAge:           360,
 	}))
 
-	r.Use(middleware.Timeout(5 * time.Second))
+	chiRouter.Use(middleware.Timeout(5 * time.Second))
 
 	docsUrl := fmt.Sprintf("%s/swagger/doc.json", a.cfg.listenAddress)
-	r.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL(docsUrl)))
+	chiRouter.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL(docsUrl)))
 
-	r.Route("/api/v1", func(r chi.Router) {
+	chiRouter.Route("/api/v1", func(r chi.Router) {
 		r.Get("/health", a.healthCheckHandler)
 
 		r.Route("/auth", func(r chi.Router) {
@@ -111,13 +114,13 @@ func (a *Application) newRouter() http.Handler {
 				r.Use(a.quizzesContextMiddleware)
 
 				r.Get("/", a.getQuizByIdHandler)
-				r.Post("/submit", a.submitAnswersHandler)
+				r.Post("/submit", a.postSubmitAnswersHandler)
 				r.Get("/results", a.getQuizResultsHandler)
 			})
 		})
 	})
 
-	return r
+	a.router = chiRouter
 }
 
 func (a *Application) Run() error {
@@ -127,7 +130,7 @@ func (a *Application) Run() error {
 
 	server := &http.Server{
 		Addr:         a.cfg.listenAddress,
-		Handler:      a.newRouter(),
+		Handler:      a.router,
 		WriteTimeout: time.Second * 30,
 		ReadTimeout:  time.Second * 10,
 		IdleTimeout:  time.Minute,
