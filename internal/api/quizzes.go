@@ -11,6 +11,14 @@ import (
 	"strconv"
 )
 
+var (
+	SubmitAnswersInvalidAnswerCountError = errors.New("amount of answers and question count do not match")
+	QuizAlreadyAnsweredError             = errors.New("quiz already answered")
+	ResultsNotFoundError                 = errors.New("results not found")
+	InvalidQuizIdError                   = func(quizId string) error { return fmt.Errorf("invalid quiz id: %s", quizId) }
+	QuizNotFoundError                    = errors.New("quiz not found")
+)
+
 type quizKey string
 
 const quizCtxKey quizKey = "post"
@@ -22,9 +30,9 @@ const quizCtxKey quizKey = "post"
 //	@Tags			quizzes
 //	@Accept			json
 //	@Produce		json
-//	@Success		200	{object}	Response{data=[]store.Quiz}
-//	@Failure		400	{object}	Response{error=string}
-//	@Failure		500	{object}	Response{error=string}
+//	@Success		200	{object}	Response{status_code=int,data=[]store.Quiz}
+//	@Failure		400	{object}	Response{status_code=int,error=string}
+//	@Failure		500	{object}	Response{status_code=int,error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes [get]
 func (a *Application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) {
@@ -46,22 +54,31 @@ func (a *Application) getQuizzesHandler(w http.ResponseWriter, r *http.Request) 
 //	@Accept			json
 //	@Produce		json
 //	@Param			quizId	path		int	true	"Quiz ID"
-//	@Success		200		{object}	Response{data=store.Quiz}
-//	@Failure		400		{object}	Response{error=string}
-//	@Failure		404		{object}	Response{error=string}
-//	@Failure		500		{object}	Response{error=string}
+//	@Success		200		{object}	Response{status_code=int,data=store.Quiz}
+//	@Failure		400		{object}	Response{status_code=int,error=string}
+//	@Failure		404		{object}	Response{status_code=int,error=string}
+//	@Failure		500		{object}	Response{status_code=int,error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes/{quizId} [get]
 func (a *Application) getQuizByIdHandler(w http.ResponseWriter, r *http.Request) {
 	quiz := getQuizFromCtx(r)
+	questions, err := a.storage.ListQuestionsByQuizId(quiz.Id)
+
+	if err != nil {
+		a.internalServerError(w, r, err)
+	}
+
+	quiz.Questions = questions
 	a.dataResponse(w, r, http.StatusOK, quiz)
 }
 
 type SubmitQuizAnswersPayload struct {
-	Answers []struct {
-		QuestionId  int64 `json:"question_id" validate:"required"`
-		AnswerIndex int   `json:"answer_index" validate:"required"`
-	} `json:"answers" validate:"required"`
+	Answers []QuestionAnswerPayload `json:"answers" validate:"required"`
+}
+
+type QuestionAnswerPayload struct {
+	QuestionId  int64 `json:"question_id" validate:"required"`
+	AnswerIndex int   `json:"answer_index" validate:"required"`
 }
 
 // SubmitQuizAnswers godoc
@@ -71,14 +88,14 @@ type SubmitQuizAnswersPayload struct {
 //	@Tags			quizzes
 //	@Accept			json
 //	@Produce		json
-//	@Param			quizId	path		int							true	"Quiz ID"
-//	@Param			payload	body		SubmitQuizAnswersPayload	true	"User's answers"
-//	@Success		200		{object}	Response{data=store.Result}
-//	@Failure		400		{object}	Response{error=string}
-//	@Failure		500		{object}	Response{error=string}
+//	@Param			quizId	path		int															true	"Quiz ID"
+//	@Param			payload body		SubmitQuizAnswersPayload{answers=[]QuestionAnswerPayload}	true	"User's answers"
+//	@Success		200		{object}	Response{status_code=int}
+//	@Failure		400		{object}	Response{status_code=int,error=string}
+//	@Failure		500		{object}	Response{status_code=int,error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes/{quizId}/submit [post]
-func (a *Application) submitAnswersHandler(w http.ResponseWriter, r *http.Request) {
+func (a *Application) postSubmitAnswersHandler(w http.ResponseWriter, r *http.Request) {
 	var payload SubmitQuizAnswersPayload
 
 	if err := readJson(w, r, &payload); err != nil {
@@ -92,14 +109,21 @@ func (a *Application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	quiz, user := getQuizFromCtx(r), getUserFromCtx(r)
+	questions, err := a.storage.ListQuestionsByQuizId(quiz.Id)
 
-	if result, _ := a.storage.GetResultByQuizAndUserId(quiz.Id, user.Id); result != nil {
-		a.badRequest(w, r, errors.New("quiz already answered"))
+	if err != nil {
+		a.internalServerError(w, r, err)
+	}
+
+	quiz.Questions = questions
+
+	if len(quiz.Questions) != len(payload.Answers) {
+		a.badRequest(w, r, SubmitAnswersInvalidAnswerCountError)
 		return
 	}
 
-	if len(quiz.Questions) != len(payload.Answers) {
-		a.badRequest(w, r, errors.New("amount of answers and question count do not match"))
+	if result, _ := a.storage.GetResultByQuizAndUserId(quiz.Id, user.Id); result != nil {
+		a.badRequest(w, r, QuizAlreadyAnsweredError)
 		return
 	}
 
@@ -132,7 +156,6 @@ func (a *Application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 		}
 	}
 
-	percentileRank := calculatePercentileRank(quiz, correctAnswersCount)
 	quiz.Performance.UsersTakenCount++
 
 	if err := a.storage.UpdateQuiz(quiz); err != nil {
@@ -145,17 +168,16 @@ func (a *Application) submitAnswersHandler(w http.ResponseWriter, r *http.Reques
 		QuestionCount:       len(quiz.Questions),
 		UserId:              user.Id,
 		CorrectAnswersCount: correctAnswersCount,
-		PercentileRank:      percentileRank,
 	}
 
-	newResult, err := a.storage.AddResult(result)
+	_, err = a.storage.AddResult(result)
 
 	if err != nil {
 		a.badRequest(w, r, err)
 		return
 	}
 
-	a.dataResponse(w, r, http.StatusOK, newResult)
+	a.dataResponse(w, r, http.StatusOK, nil)
 }
 
 func calculatePercentileRank(quiz *store.Quiz, correctAnswersCount int) float64 {
@@ -183,10 +205,10 @@ func calculatePercentileRank(quiz *store.Quiz, correctAnswersCount int) float64 
 //	@Accept			json
 //	@Produce		json
 //	@Param			quizId	path		int	true	"Quiz ID"
-//	@Success		200		{object}	Response{data=store.Result}
-//	@Failure		400		{object}	Response{error=string}
-//	@Failure		404		{object}	Response{error=string}
-//	@Failure		500		{object}	Response{error=string}
+//	@Success		200		{object}	Response{status_code=int,data=store.Result}
+//	@Failure		400		{object}	Response{status_code=int,error=string}
+//	@Failure		404		{object}	Response{status_code=int,error=string}
+//	@Failure		500		{object}	Response{status_code=int,error=string}
 //	@Security		BearerAuth
 //	@Router			/quizzes/{quizId}/results [get]
 func (a *Application) getQuizResultsHandler(w http.ResponseWriter, r *http.Request) {
@@ -194,7 +216,7 @@ func (a *Application) getQuizResultsHandler(w http.ResponseWriter, r *http.Reque
 	result, err := a.storage.GetResultByQuizAndUserId(quiz.Id, user.Id)
 
 	if errors.Is(err, store.NotFoundError) {
-		a.notFound(w, r, err)
+		a.notFound(w, r, ResultsNotFoundError)
 		return
 	}
 
@@ -213,8 +235,8 @@ func (a *Application) quizzesContextMiddleware(next http.Handler) http.Handler {
 		idParameter := chi.URLParam(r, "quizId")
 		id, err := strconv.ParseInt(idParameter, 10, 64)
 
-		if err != nil {
-			a.badRequest(w, r, fmt.Errorf("invalid quizId %s", idParameter))
+		if err != nil || id < 1 {
+			a.badRequest(w, r, InvalidQuizIdError(idParameter))
 			return
 		}
 
@@ -225,21 +247,12 @@ func (a *Application) quizzesContextMiddleware(next http.Handler) http.Handler {
 		if err != nil {
 			switch {
 			case errors.Is(err, store.NotFoundError):
-				a.notFound(w, r, err)
+				a.notFound(w, r, QuizNotFoundError)
 			default:
 				a.internalServerError(w, r, err)
 			}
 			return
 		}
-
-		//questions, err := a.storageListQuestionsByQuizId(store.QuizId(id))
-		//
-		//if err != nil {
-		//	a.internalServerError(w, r, err)
-		//	return
-		//}
-		//
-		//quiz.Questions = questions
 
 		ctx = context.WithValue(ctx, quizCtxKey, quiz)
 		next.ServeHTTP(w, r.WithContext(ctx))

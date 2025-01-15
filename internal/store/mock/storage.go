@@ -40,72 +40,165 @@ func (m *MockStorage) EXPECT() *MockStorageMockRecorder {
 	return m.recorder
 }
 
-// Questions mocks base method.
-func (m *MockStorage) Questions() store.QuestionStore {
+// AddResult mocks base method.
+func (m *MockStorage) AddResult(arg0 *store.Result) (*store.Result, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Questions")
-	ret0, _ := ret[0].(store.QuestionStore)
+	ret := m.ctrl.Call(m, "AddResult", arg0)
+	ret0, _ := ret[0].(*store.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddResult indicates an expected call of AddResult.
+func (mr *MockStorageMockRecorder) AddResult(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddResult", reflect.TypeOf((*MockStorage)(nil).AddResult), arg0)
+}
+
+// AddUserAnswer mocks base method.
+func (m *MockStorage) AddUserAnswer(arg0 *store.UserAnswer) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddUserAnswer", arg0)
+	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Questions indicates an expected call of Questions.
-func (mr *MockStorageMockRecorder) Questions() *gomock.Call {
+// AddUserAnswer indicates an expected call of AddUserAnswer.
+func (mr *MockStorageMockRecorder) AddUserAnswer(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Questions", reflect.TypeOf((*MockStorage)(nil).Questions))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddUserAnswer", reflect.TypeOf((*MockStorage)(nil).AddUserAnswer), arg0)
 }
 
-// Quizzes mocks base method.
-func (m *MockStorage) Quizzes() store.QuizStore {
+// GetQuizById mocks base method.
+func (m *MockStorage) GetQuizById(arg0 store.QuizId) (*store.Quiz, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Quizzes")
-	ret0, _ := ret[0].(store.QuizStore)
+	ret := m.ctrl.Call(m, "GetQuizById", arg0)
+	ret0, _ := ret[0].(*store.Quiz)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetQuizById indicates an expected call of GetQuizById.
+func (mr *MockStorageMockRecorder) GetQuizById(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetQuizById", reflect.TypeOf((*MockStorage)(nil).GetQuizById), arg0)
+}
+
+// GetResultByQuizAndUserId mocks base method.
+func (m *MockStorage) GetResultByQuizAndUserId(arg0 store.QuizId, arg1 store.UserId) (*store.Result, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetResultByQuizAndUserId", arg0, arg1)
+	ret0, _ := ret[0].(*store.Result)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetResultByQuizAndUserId indicates an expected call of GetResultByQuizAndUserId.
+func (mr *MockStorageMockRecorder) GetResultByQuizAndUserId(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetResultByQuizAndUserId", reflect.TypeOf((*MockStorage)(nil).GetResultByQuizAndUserId), arg0, arg1)
+}
+
+// GetUserByEmail mocks base method.
+func (m *MockStorage) GetUserByEmail(arg0 string) (*store.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserByEmail", arg0)
+	ret0, _ := ret[0].(*store.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserByEmail indicates an expected call of GetUserByEmail.
+func (mr *MockStorageMockRecorder) GetUserByEmail(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByEmail", reflect.TypeOf((*MockStorage)(nil).GetUserByEmail), arg0)
+}
+
+// GetUserById mocks base method.
+func (m *MockStorage) GetUserById(arg0 store.UserId) (*store.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserById", arg0)
+	ret0, _ := ret[0].(*store.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserById indicates an expected call of GetUserById.
+func (mr *MockStorageMockRecorder) GetUserById(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserById", reflect.TypeOf((*MockStorage)(nil).GetUserById), arg0)
+}
+
+// ListQuestionsByQuizId mocks base method.
+func (m *MockStorage) ListQuestionsByQuizId(arg0 store.QuizId) ([]*store.Question, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListQuestionsByQuizId", arg0)
+	ret0, _ := ret[0].([]*store.Question)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListQuestionsByQuizId indicates an expected call of ListQuestionsByQuizId.
+func (mr *MockStorageMockRecorder) ListQuestionsByQuizId(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListQuestionsByQuizId", reflect.TypeOf((*MockStorage)(nil).ListQuestionsByQuizId), arg0)
+}
+
+// ListQuizzes mocks base method.
+func (m *MockStorage) ListQuizzes() ([]*store.Quiz, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListQuizzes")
+	ret0, _ := ret[0].([]*store.Quiz)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListQuizzes indicates an expected call of ListQuizzes.
+func (mr *MockStorageMockRecorder) ListQuizzes() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListQuizzes", reflect.TypeOf((*MockStorage)(nil).ListQuizzes))
+}
+
+// ListUserAnswersByQuizId mocks base method.
+func (m *MockStorage) ListUserAnswersByQuizId(arg0 store.QuizId) ([]*store.UserAnswer, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListUserAnswersByQuizId", arg0)
+	ret0, _ := ret[0].([]*store.UserAnswer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListUserAnswersByQuizId indicates an expected call of ListUserAnswersByQuizId.
+func (mr *MockStorageMockRecorder) ListUserAnswersByQuizId(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUserAnswersByQuizId", reflect.TypeOf((*MockStorage)(nil).ListUserAnswersByQuizId), arg0)
+}
+
+// ListUserAnswersByUserAndQuizId mocks base method.
+func (m *MockStorage) ListUserAnswersByUserAndQuizId(arg0 store.UserId, arg1 store.QuizId) ([]*store.UserAnswer, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListUserAnswersByUserAndQuizId", arg0, arg1)
+	ret0, _ := ret[0].([]*store.UserAnswer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListUserAnswersByUserAndQuizId indicates an expected call of ListUserAnswersByUserAndQuizId.
+func (mr *MockStorageMockRecorder) ListUserAnswersByUserAndQuizId(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUserAnswersByUserAndQuizId", reflect.TypeOf((*MockStorage)(nil).ListUserAnswersByUserAndQuizId), arg0, arg1)
+}
+
+// UpdateQuiz mocks base method.
+func (m *MockStorage) UpdateQuiz(arg0 *store.Quiz) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateQuiz", arg0)
+	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Quizzes indicates an expected call of Quizzes.
-func (mr *MockStorageMockRecorder) Quizzes() *gomock.Call {
+// UpdateQuiz indicates an expected call of UpdateQuiz.
+func (mr *MockStorageMockRecorder) UpdateQuiz(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Quizzes", reflect.TypeOf((*MockStorage)(nil).Quizzes))
-}
-
-// Results mocks base method.
-func (m *MockStorage) Results() store.ResultStore {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Results")
-	ret0, _ := ret[0].(store.ResultStore)
-	return ret0
-}
-
-// Results indicates an expected call of Results.
-func (mr *MockStorageMockRecorder) Results() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Results", reflect.TypeOf((*MockStorage)(nil).Results))
-}
-
-// UserAnswers mocks base method.
-func (m *MockStorage) UserAnswers() store.UserAnswerStore {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UserAnswers")
-	ret0, _ := ret[0].(store.UserAnswerStore)
-	return ret0
-}
-
-// UserAnswers indicates an expected call of UserAnswers.
-func (mr *MockStorageMockRecorder) UserAnswers() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UserAnswers", reflect.TypeOf((*MockStorage)(nil).UserAnswers))
-}
-
-// Users mocks base method.
-func (m *MockStorage) Users() store.UserStore {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Users")
-	ret0, _ := ret[0].(store.UserStore)
-	return ret0
-}
-
-// Users indicates an expected call of Users.
-func (mr *MockStorageMockRecorder) Users() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Users", reflect.TypeOf((*MockStorage)(nil).Users))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateQuiz", reflect.TypeOf((*MockStorage)(nil).UpdateQuiz), arg0)
 }

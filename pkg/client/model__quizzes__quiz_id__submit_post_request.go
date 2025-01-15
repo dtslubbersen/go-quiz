@@ -17,36 +17,36 @@ import (
 	"fmt"
 )
 
-// checks if the ApiSubmitQuizAnswersPayload type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &ApiSubmitQuizAnswersPayload{}
+// checks if the QuizzesQuizIdSubmitPostRequest type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &QuizzesQuizIdSubmitPostRequest{}
 
-// ApiSubmitQuizAnswersPayload struct for ApiSubmitQuizAnswersPayload
-type ApiSubmitQuizAnswersPayload struct {
+// QuizzesQuizIdSubmitPostRequest struct for QuizzesQuizIdSubmitPostRequest
+type QuizzesQuizIdSubmitPostRequest struct {
 	Answers []ApiQuestionAnswerPayload `json:"answers"`
 }
 
-type _ApiSubmitQuizAnswersPayload ApiSubmitQuizAnswersPayload
+type _QuizzesQuizIdSubmitPostRequest QuizzesQuizIdSubmitPostRequest
 
-// NewApiSubmitQuizAnswersPayload instantiates a new ApiSubmitQuizAnswersPayload object
+// NewQuizzesQuizIdSubmitPostRequest instantiates a new QuizzesQuizIdSubmitPostRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewApiSubmitQuizAnswersPayload(answers []ApiQuestionAnswerPayload) *ApiSubmitQuizAnswersPayload {
-	this := ApiSubmitQuizAnswersPayload{}
+func NewQuizzesQuizIdSubmitPostRequest(answers []ApiQuestionAnswerPayload) *QuizzesQuizIdSubmitPostRequest {
+	this := QuizzesQuizIdSubmitPostRequest{}
 	this.Answers = answers
 	return &this
 }
 
-// NewApiSubmitQuizAnswersPayloadWithDefaults instantiates a new ApiSubmitQuizAnswersPayload object
+// NewQuizzesQuizIdSubmitPostRequestWithDefaults instantiates a new QuizzesQuizIdSubmitPostRequest object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewApiSubmitQuizAnswersPayloadWithDefaults() *ApiSubmitQuizAnswersPayload {
-	this := ApiSubmitQuizAnswersPayload{}
+func NewQuizzesQuizIdSubmitPostRequestWithDefaults() *QuizzesQuizIdSubmitPostRequest {
+	this := QuizzesQuizIdSubmitPostRequest{}
 	return &this
 }
 
 // GetAnswers returns the Answers field value
-func (o *ApiSubmitQuizAnswersPayload) GetAnswers() []ApiQuestionAnswerPayload {
+func (o *QuizzesQuizIdSubmitPostRequest) GetAnswers() []ApiQuestionAnswerPayload {
 	if o == nil {
 		var ret []ApiQuestionAnswerPayload
 		return ret
@@ -57,7 +57,7 @@ func (o *ApiSubmitQuizAnswersPayload) GetAnswers() []ApiQuestionAnswerPayload {
 
 // GetAnswersOk returns a tuple with the Answers field value
 // and a boolean to check if the value has been set.
-func (o *ApiSubmitQuizAnswersPayload) GetAnswersOk() ([]ApiQuestionAnswerPayload, bool) {
+func (o *QuizzesQuizIdSubmitPostRequest) GetAnswersOk() ([]ApiQuestionAnswerPayload, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -65,11 +65,11 @@ func (o *ApiSubmitQuizAnswersPayload) GetAnswersOk() ([]ApiQuestionAnswerPayload
 }
 
 // SetAnswers sets field value
-func (o *ApiSubmitQuizAnswersPayload) SetAnswers(v []ApiQuestionAnswerPayload) {
+func (o *QuizzesQuizIdSubmitPostRequest) SetAnswers(v []ApiQuestionAnswerPayload) {
 	o.Answers = v
 }
 
-func (o ApiSubmitQuizAnswersPayload) MarshalJSON() ([]byte, error) {
+func (o QuizzesQuizIdSubmitPostRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -77,13 +77,13 @@ func (o ApiSubmitQuizAnswersPayload) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o ApiSubmitQuizAnswersPayload) ToMap() (map[string]interface{}, error) {
+func (o QuizzesQuizIdSubmitPostRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["answers"] = o.Answers
 	return toSerialize, nil
 }
 
-func (o *ApiSubmitQuizAnswersPayload) UnmarshalJSON(data []byte) (err error) {
+func (o *QuizzesQuizIdSubmitPostRequest) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
@@ -105,53 +105,53 @@ func (o *ApiSubmitQuizAnswersPayload) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varApiSubmitQuizAnswersPayload := _ApiSubmitQuizAnswersPayload{}
+	varQuizzesQuizIdSubmitPostRequest := _QuizzesQuizIdSubmitPostRequest{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varApiSubmitQuizAnswersPayload)
+	err = decoder.Decode(&varQuizzesQuizIdSubmitPostRequest)
 
 	if err != nil {
 		return err
 	}
 
-	*o = ApiSubmitQuizAnswersPayload(varApiSubmitQuizAnswersPayload)
+	*o = QuizzesQuizIdSubmitPostRequest(varQuizzesQuizIdSubmitPostRequest)
 
 	return err
 }
 
-type NullableApiSubmitQuizAnswersPayload struct {
-	value *ApiSubmitQuizAnswersPayload
+type NullableQuizzesQuizIdSubmitPostRequest struct {
+	value *QuizzesQuizIdSubmitPostRequest
 	isSet bool
 }
 
-func (v NullableApiSubmitQuizAnswersPayload) Get() *ApiSubmitQuizAnswersPayload {
+func (v NullableQuizzesQuizIdSubmitPostRequest) Get() *QuizzesQuizIdSubmitPostRequest {
 	return v.value
 }
 
-func (v *NullableApiSubmitQuizAnswersPayload) Set(val *ApiSubmitQuizAnswersPayload) {
+func (v *NullableQuizzesQuizIdSubmitPostRequest) Set(val *QuizzesQuizIdSubmitPostRequest) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableApiSubmitQuizAnswersPayload) IsSet() bool {
+func (v NullableQuizzesQuizIdSubmitPostRequest) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableApiSubmitQuizAnswersPayload) Unset() {
+func (v *NullableQuizzesQuizIdSubmitPostRequest) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableApiSubmitQuizAnswersPayload(val *ApiSubmitQuizAnswersPayload) *NullableApiSubmitQuizAnswersPayload {
-	return &NullableApiSubmitQuizAnswersPayload{value: val, isSet: true}
+func NewNullableQuizzesQuizIdSubmitPostRequest(val *QuizzesQuizIdSubmitPostRequest) *NullableQuizzesQuizIdSubmitPostRequest {
+	return &NullableQuizzesQuizIdSubmitPostRequest{value: val, isSet: true}
 }
 
-func (v NullableApiSubmitQuizAnswersPayload) MarshalJSON() ([]byte, error) {
+func (v NullableQuizzesQuizIdSubmitPostRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableApiSubmitQuizAnswersPayload) UnmarshalJSON(src []byte) error {
+func (v *NullableQuizzesQuizIdSubmitPostRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

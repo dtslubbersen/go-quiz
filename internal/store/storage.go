@@ -10,7 +10,9 @@ var (
 )
 
 type Storage interface {
-	GetQuizById(quizId QuizId) (*Quiz, error)
+	ListQuestionsByQuizId(QuizId) ([]*Question, error)
+
+	GetQuizById(QuizId) (*Quiz, error)
 	ListQuizzes() ([]*Quiz, error)
 	UpdateQuiz(*Quiz) error
 
@@ -26,6 +28,7 @@ type Storage interface {
 }
 
 type InMemoryStorage struct {
+	Questions   *InMemoryQuestionStore
 	Quizzes     *InMemoryQuizStore
 	Results     *InMemoryResultStore
 	UserAnswers *InMemoryUserAnswerStore
@@ -35,8 +38,11 @@ type InMemoryStorage struct {
 func NewStorage(seed *Seed) Storage {
 
 	return &InMemoryStorage{
+		Questions: &InMemoryQuestionStore{
+			items: seed.questions,
+		},
 		Quizzes: &InMemoryQuizStore{
-			entities: seed.quizzes,
+			items: seed.quizzes,
 		},
 		Results: &InMemoryResultStore{
 			items:  make(map[ResultId]*Result),

@@ -114,7 +114,7 @@ func (a *Application) setupRouter() {
 				r.Use(a.quizzesContextMiddleware)
 
 				r.Get("/", a.getQuizByIdHandler)
-				r.Post("/submit", a.submitAnswersHandler)
+				r.Post("/submit", a.postSubmitAnswersHandler)
 				r.Get("/results", a.getQuizResultsHandler)
 			})
 		})

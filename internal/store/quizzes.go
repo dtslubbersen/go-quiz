@@ -18,15 +18,15 @@ type Performance struct {
 }
 
 type InMemoryQuizStore struct {
-	mu       sync.Mutex
-	entities map[QuizId]*Quiz
+	mu    sync.Mutex
+	items map[QuizId]*Quiz
 }
 
 func (s *InMemoryStorage) GetQuizById(id QuizId) (*Quiz, error) {
 	s.Quizzes.mu.Lock()
 	defer s.Quizzes.mu.Unlock()
 
-	quiz, exists := s.Quizzes.entities[id]
+	quiz, exists := s.Quizzes.items[id]
 
 	if !exists {
 		return nil, NotFoundError
@@ -39,9 +39,9 @@ func (s *InMemoryStorage) ListQuizzes() ([]*Quiz, error) {
 	s.Quizzes.mu.Lock()
 	defer s.Quizzes.mu.Unlock()
 
-	quizzes := make([]*Quiz, 0, len(s.Quizzes.entities))
+	quizzes := make([]*Quiz, 0, len(s.Quizzes.items))
 
-	for _, quiz := range s.Quizzes.entities {
+	for _, quiz := range s.Quizzes.items {
 		quizzes = append(quizzes, quiz)
 	}
 
@@ -52,10 +52,10 @@ func (s *InMemoryStorage) UpdateQuiz(quiz *Quiz) error {
 	s.Quizzes.mu.Lock()
 	defer s.Quizzes.mu.Unlock()
 
-	if _, exists := s.Quizzes.entities[quiz.Id]; !exists {
+	if _, exists := s.Quizzes.items[quiz.Id]; !exists {
 		return NotFoundError
 	}
 
-	s.Quizzes.entities[quiz.Id] = quiz
+	s.Quizzes.items[quiz.Id] = quiz
 	return nil
 }

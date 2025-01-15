@@ -1,5 +1,7 @@
 package store
 
+import "sync"
+
 type QuestionId int64
 
 type Question struct {
@@ -12,26 +14,22 @@ type Question struct {
 
 type Answer string
 
-//type QuestionStore interface {
-//	ListQuestionsByQuizId(QuizId) ([]*Question, error)
-//}
-//
-//type InMemoryQuestionStore struct {
-//	mu        sync.Mutex
-//	questions map[QuestionId]*Question
-//}
-//
-//func (s *InMemoryQuestionStore) ListQuestionsByQuizId(quizId QuizId) ([]*Question, error) {
-//	s.mu.Lock()
-//	defer s.mu.Unlock()
-//
-//	var questions []*Question
-//
-//	for _, question := range s.questions {
-//		if question.QuizId == quizId {
-//			questions = append(questions, question)
-//		}
-//	}
-//
-//	return questions, nil
-//}
+type InMemoryQuestionStore struct {
+	mu    sync.Mutex
+	items map[QuestionId]*Question
+}
+
+func (s *InMemoryStorage) ListQuestionsByQuizId(quizId QuizId) ([]*Question, error) {
+	s.Questions.mu.Lock()
+	defer s.Questions.mu.Unlock()
+
+	var questions []*Question
+
+	for _, question := range s.Questions.items {
+		if question.QuizId == quizId {
+			questions = append(questions, question)
+		}
+	}
+
+	return questions, nil
+}

@@ -2,22 +2,14 @@ package auth
 
 import (
 	"github.com/golang-jwt/jwt/v5"
-	"time"
 )
 
 type MockAuthenticator struct{}
 
-var testClaims = jwt.MapClaims{
-	"aud": "test-aud",
-	"iss": "test-aud",
-	"sub": int64(1),
-	"exp": time.Now().Add(time.Hour).Unix(),
-}
-
 const secret = "test"
 
-func (m *MockAuthenticator) GenerateToken(_ jwt.Claims) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, testClaims)
+func (m *MockAuthenticator) GenerateToken(claims jwt.Claims) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	tokenString, _ := token.SignedString([]byte(secret))
 	return tokenString, nil
