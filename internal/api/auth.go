@@ -50,7 +50,7 @@ func (a *Application) createTokenHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	user, err := a.storage.Users.GetByEmail(payload.Email)
+	user, err := a.storage.GetUserByEmail(payload.Email)
 
 	if err != nil {
 		switch {

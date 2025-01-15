@@ -9,48 +9,51 @@ var (
 	NotFoundError       = errors.New("the requested item could not be found")
 )
 
-type Storage struct {
-	Questions interface {
-		GetByQuizId(QuizId) ([]*Question, error)
-	}
-	Quizzes interface {
-		GetById(QuizId) (*Quiz, error)
-		GetAll() ([]*Quiz, error)
-		Update(*Quiz) error
-	}
-	Results interface {
-		Add(*Result) (*Result, error)
-		GetByQuizAndUserId(QuizId, UserId) (*Result, error)
-	}
-	UserAnswers interface {
-		Add(*UserAnswer) error
-		GetByQuizId(QuizId) ([]*UserAnswer, error)
-		GetByUserAndQuizId(UserId, QuizId) ([]*UserAnswer, error)
-	}
-	Users interface {
-		GetByEmail(string) (*User, error)
-		GetById(UserId) (*User, error)
-	}
+type Storage interface {
+	ListQuestionsByQuizId(QuizId) ([]*Question, error)
+
+	GetQuizById(QuizId) (*Quiz, error)
+	ListQuizzes() ([]*Quiz, error)
+	UpdateQuiz(*Quiz) error
+
+	AddResult(*Result) (*Result, error)
+	GetResultByQuizAndUserId(QuizId, UserId) (*Result, error)
+
+	AddUserAnswer(*UserAnswer) error
+	ListUserAnswersByQuizId(QuizId) ([]*UserAnswer, error)
+	ListUserAnswersByUserAndQuizId(UserId, QuizId) ([]*UserAnswer, error)
+
+	GetUserByEmail(string) (*User, error)
+	GetUserById(UserId) (*User, error)
+}
+
+type InMemoryStorage struct {
+	Questions   *InMemoryQuestionStore
+	Quizzes     *InMemoryQuizStore
+	Results     *InMemoryResultStore
+	UserAnswers *InMemoryUserAnswerStore
+	Users       *InMemoryUserStore
 }
 
 func NewStorage(seed *Seed) Storage {
-	return Storage{
-		Questions: &QuestionStore{
-			questions: seed.questions,
+
+	return &InMemoryStorage{
+		Questions: &InMemoryQuestionStore{
+			items: seed.questions,
 		},
-		Quizzes: &QuizStore{
-			quizzes: seed.quizzes,
+		Quizzes: &InMemoryQuizStore{
+			items: seed.quizzes,
 		},
-		Results: &ResultStore{
-			results: make(map[ResultId]*Result),
-			nextId:  1,
+		Results: &InMemoryResultStore{
+			items:  make(map[ResultId]*Result),
+			nextId: 1,
 		},
-		UserAnswers: &UserAnswerStore{
-			userAnswers: seed.userAnswers,
-			nextId:      55,
+		UserAnswers: &InMemoryUserAnswerStore{
+			items:  seed.userAnswers,
+			nextId: 55,
 		},
-		Users: &UserStore{
-			users: seed.users,
+		Users: &InMemoryUserStore{
+			items: seed.users,
 		},
 	}
 }

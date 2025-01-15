@@ -17,16 +17,16 @@ type Performance struct {
 	CorrectAnswersCount map[int]int `json:"correct_answers_count"`
 }
 
-type QuizStore struct {
-	mu      sync.Mutex
-	quizzes map[QuizId]*Quiz
+type InMemoryQuizStore struct {
+	mu    sync.Mutex
+	items map[QuizId]*Quiz
 }
 
-func (s *QuizStore) GetById(id QuizId) (*Quiz, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func (s *InMemoryStorage) GetQuizById(id QuizId) (*Quiz, error) {
+	s.Quizzes.mu.Lock()
+	defer s.Quizzes.mu.Unlock()
 
-	quiz, exists := s.quizzes[id]
+	quiz, exists := s.Quizzes.items[id]
 
 	if !exists {
 		return nil, NotFoundError
@@ -35,27 +35,27 @@ func (s *QuizStore) GetById(id QuizId) (*Quiz, error) {
 	return quiz, nil
 }
 
-func (s *QuizStore) GetAll() ([]*Quiz, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func (s *InMemoryStorage) ListQuizzes() ([]*Quiz, error) {
+	s.Quizzes.mu.Lock()
+	defer s.Quizzes.mu.Unlock()
 
-	quizzes := make([]*Quiz, 0, len(s.quizzes))
+	quizzes := make([]*Quiz, 0, len(s.Quizzes.items))
 
-	for _, quiz := range s.quizzes {
+	for _, quiz := range s.Quizzes.items {
 		quizzes = append(quizzes, quiz)
 	}
 
 	return quizzes, nil
 }
 
-func (s *QuizStore) Update(quiz *Quiz) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func (s *InMemoryStorage) UpdateQuiz(quiz *Quiz) error {
+	s.Quizzes.mu.Lock()
+	defer s.Quizzes.mu.Unlock()
 
-	if _, exists := s.quizzes[quiz.Id]; !exists {
+	if _, exists := s.Quizzes.items[quiz.Id]; !exists {
 		return NotFoundError
 	}
 
-	s.quizzes[quiz.Id] = quiz
+	s.Quizzes.items[quiz.Id] = quiz
 	return nil
 }

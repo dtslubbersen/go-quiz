@@ -35,7 +35,7 @@ func (r ApiQuizzesGetRequest) Execute() (*QuizzesGet200Response, *http.Response,
 /*
 QuizzesGet Retrieves all quizzes
 
-Fetches a list of all quizzes from the in memory storage
+Fetches a list of all quizzes from the in memory store
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiQuizzesGetRequest
@@ -123,7 +123,7 @@ func (a *QuizzesAPIService) QuizzesGetExecute(r ApiQuizzesGetRequest) (*QuizzesG
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v AuthTokenPost400Response
+			var v QuizzesGet400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -134,7 +134,7 @@ func (a *QuizzesAPIService) QuizzesGetExecute(r ApiQuizzesGetRequest) (*QuizzesG
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 500 {
-			var v AuthTokenPost400Response
+			var v QuizzesGet400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -171,7 +171,7 @@ func (r ApiQuizzesQuizIdGetRequest) Execute() (*QuizzesQuizIdGet200Response, *ht
 /*
 QuizzesQuizIdGet Retrieves a quiz by ID
 
-Fetches a specific quiz using its ID from the in-memory storage
+Fetches a specific quiz using its ID from the in-memory store
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param quizId Quiz ID
@@ -262,7 +262,7 @@ func (a *QuizzesAPIService) QuizzesQuizIdGetExecute(r ApiQuizzesQuizIdGetRequest
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v AuthTokenPost400Response
+			var v QuizzesGet400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -273,7 +273,7 @@ func (a *QuizzesAPIService) QuizzesQuizIdGetExecute(r ApiQuizzesQuizIdGetRequest
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v AuthTokenPost400Response
+			var v QuizzesGet400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -284,7 +284,7 @@ func (a *QuizzesAPIService) QuizzesQuizIdGetExecute(r ApiQuizzesQuizIdGetRequest
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 500 {
-			var v AuthTokenPost400Response
+			var v QuizzesGet400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -412,7 +412,7 @@ func (a *QuizzesAPIService) QuizzesQuizIdResultsGetExecute(r ApiQuizzesQuizIdRes
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v AuthTokenPost400Response
+			var v QuizzesGet400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -423,7 +423,7 @@ func (a *QuizzesAPIService) QuizzesQuizIdResultsGetExecute(r ApiQuizzesQuizIdRes
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v AuthTokenPost400Response
+			var v QuizzesGet400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -434,7 +434,7 @@ func (a *QuizzesAPIService) QuizzesQuizIdResultsGetExecute(r ApiQuizzesQuizIdRes
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 500 {
-			var v AuthTokenPost400Response
+			var v QuizzesGet400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -462,16 +462,16 @@ type ApiQuizzesQuizIdSubmitPostRequest struct {
 	ctx        context.Context
 	ApiService *QuizzesAPIService
 	quizId     int32
-	payload    *ApiSubmitQuizAnswersPayload
+	payload    *QuizzesQuizIdSubmitPostRequest
 }
 
 // User&#39;s answers
-func (r ApiQuizzesQuizIdSubmitPostRequest) Payload(payload ApiSubmitQuizAnswersPayload) ApiQuizzesQuizIdSubmitPostRequest {
+func (r ApiQuizzesQuizIdSubmitPostRequest) Payload(payload QuizzesQuizIdSubmitPostRequest) ApiQuizzesQuizIdSubmitPostRequest {
 	r.payload = &payload
 	return r
 }
 
-func (r ApiQuizzesQuizIdSubmitPostRequest) Execute() (*QuizzesQuizIdResultsGet200Response, *http.Response, error) {
+func (r ApiQuizzesQuizIdSubmitPostRequest) Execute() (*QuizzesQuizIdSubmitPost200Response, *http.Response, error) {
 	return r.ApiService.QuizzesQuizIdSubmitPostExecute(r)
 }
 
@@ -494,13 +494,13 @@ func (a *QuizzesAPIService) QuizzesQuizIdSubmitPost(ctx context.Context, quizId 
 
 // Execute executes the request
 //
-//	@return QuizzesQuizIdResultsGet200Response
-func (a *QuizzesAPIService) QuizzesQuizIdSubmitPostExecute(r ApiQuizzesQuizIdSubmitPostRequest) (*QuizzesQuizIdResultsGet200Response, *http.Response, error) {
+//	@return QuizzesQuizIdSubmitPost200Response
+func (a *QuizzesAPIService) QuizzesQuizIdSubmitPostExecute(r ApiQuizzesQuizIdSubmitPostRequest) (*QuizzesQuizIdSubmitPost200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *QuizzesQuizIdResultsGet200Response
+		localVarReturnValue *QuizzesQuizIdSubmitPost200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "QuizzesAPIService.QuizzesQuizIdSubmitPost")
@@ -574,7 +574,7 @@ func (a *QuizzesAPIService) QuizzesQuizIdSubmitPostExecute(r ApiQuizzesQuizIdSub
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v AuthTokenPost400Response
+			var v QuizzesGet400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -585,7 +585,7 @@ func (a *QuizzesAPIService) QuizzesQuizIdSubmitPostExecute(r ApiQuizzesQuizIdSub
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 500 {
-			var v AuthTokenPost400Response
+			var v QuizzesGet400Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

@@ -108,6 +108,10 @@ func (q *QuizContext) AnswerQuestions() error {
 		return err
 	}
 
+	if len(response.Data.Questions) == 0 {
+		return errors.New("no questions found")
+	}
+
 	for index, question := range response.Data.Questions {
 		templates := &promptui.SelectTemplates{
 			Label:    "{{ . }}?",
@@ -136,21 +140,32 @@ func (q *QuizContext) AnswerQuestions() error {
 }
 
 func (q *QuizContext) SubmitAnswers() error {
-	var answers []openapi.ApiSubmitQuizAnswersPayloadAnswersInner
+	var answers []openapi.ApiQuestionAnswerPayload
 
 	for questionId, answerIndex := range q.QuestionAnswerMap {
-		answers = append(answers, openapi.ApiSubmitQuizAnswersPayloadAnswersInner{
+		answers = append(answers, openapi.ApiQuestionAnswerPayload{
 			QuestionId:  questionId,
 			AnswerIndex: answerIndex,
 		})
 	}
 
-	payload := openapi.ApiSubmitQuizAnswersPayload{
+	payload := openapi.QuizzesQuizIdSubmitPostRequest{
 		Answers: answers,
 	}
 
 	request := q.ApiClient.QuizzesAPI.QuizzesQuizIdSubmitPost(q.Context, q.SelectedQuizId).Payload(payload)
-	response, _, err := q.ApiClient.QuizzesAPI.QuizzesQuizIdSubmitPostExecute(request)
+	_, _, err := q.ApiClient.QuizzesAPI.QuizzesQuizIdSubmitPostExecute(request)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (q *QuizContext) DisplayResults() error {
+	request := q.ApiClient.QuizzesAPI.QuizzesQuizIdResultsGet(q.Context, q.SelectedQuizId)
+	response, _, err := q.ApiClient.QuizzesAPI.QuizzesQuizIdResultsGetExecute(request)
 
 	if err != nil {
 		return err

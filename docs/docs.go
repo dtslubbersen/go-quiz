@@ -131,7 +131,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Fetches a list of all quizzes from the in memory storage",
+                "description": "Fetches a list of all quizzes from the in memory store",
                 "consumes": [
                     "application/json"
                 ],
@@ -158,6 +158,9 @@ const docTemplate = `{
                                             "items": {
                                                 "$ref": "#/definitions/store.Quiz"
                                             }
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -176,6 +179,9 @@ const docTemplate = `{
                                     "properties": {
                                         "error": {
                                             "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -194,6 +200,9 @@ const docTemplate = `{
                                     "properties": {
                                         "error": {
                                             "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -210,7 +219,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Fetches a specific quiz using its ID from the in-memory storage",
+                "description": "Fetches a specific quiz using its ID from the in-memory store",
                 "consumes": [
                     "application/json"
                 ],
@@ -243,6 +252,9 @@ const docTemplate = `{
                                     "properties": {
                                         "data": {
                                             "$ref": "#/definitions/store.Quiz"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -261,6 +273,9 @@ const docTemplate = `{
                                     "properties": {
                                         "error": {
                                             "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -279,6 +294,9 @@ const docTemplate = `{
                                     "properties": {
                                         "error": {
                                             "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -297,6 +315,9 @@ const docTemplate = `{
                                     "properties": {
                                         "error": {
                                             "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -346,6 +367,9 @@ const docTemplate = `{
                                     "properties": {
                                         "data": {
                                             "$ref": "#/definitions/store.Result"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -364,6 +388,9 @@ const docTemplate = `{
                                     "properties": {
                                         "error": {
                                             "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -382,6 +409,9 @@ const docTemplate = `{
                                     "properties": {
                                         "error": {
                                             "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -400,6 +430,9 @@ const docTemplate = `{
                                     "properties": {
                                         "error": {
                                             "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -441,7 +474,22 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.SubmitQuizAnswersPayload"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/api.SubmitQuizAnswersPayload"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "answers": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/api.QuestionAnswerPayload"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 ],
@@ -456,8 +504,8 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/store.Result"
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -476,6 +524,9 @@ const docTemplate = `{
                                     "properties": {
                                         "error": {
                                             "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -494,6 +545,9 @@ const docTemplate = `{
                                     "properties": {
                                         "error": {
                                             "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -525,6 +579,21 @@ const docTemplate = `{
                 }
             }
         },
+        "api.QuestionAnswerPayload": {
+            "type": "object",
+            "required": [
+                "answer_index",
+                "question_id"
+            ],
+            "properties": {
+                "answer_index": {
+                    "type": "integer"
+                },
+                "question_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.Response": {
             "type": "object",
             "properties": {
@@ -546,19 +615,7 @@ const docTemplate = `{
                 "answers": {
                     "type": "array",
                     "items": {
-                        "type": "object",
-                        "required": [
-                            "answer_index",
-                            "question_id"
-                        ],
-                        "properties": {
-                            "answer_index": {
-                                "type": "integer"
-                            },
-                            "question_id": {
-                                "type": "integer"
-                            }
-                        }
+                        "$ref": "#/definitions/api.QuestionAnswerPayload"
                     }
                 }
             }
