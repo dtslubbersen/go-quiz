@@ -36,7 +36,6 @@ type InMemoryStorage struct {
 }
 
 func NewStorage(seed *Seed) Storage {
-
 	return &InMemoryStorage{
 		Questions: &InMemoryQuestionStore{
 			items: seed.questions,
