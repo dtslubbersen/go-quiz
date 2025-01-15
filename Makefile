@@ -1,6 +1,9 @@
 build:
 	@go build ./cmd/go-quiz
 
+test:
+	@go test ./...
+
 gen-docs:
 	@swag fmt
 	@swag init -g ./cmd/go-quiz/main.go

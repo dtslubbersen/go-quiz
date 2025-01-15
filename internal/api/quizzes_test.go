@@ -8,14 +8,12 @@ import (
 	"github.com/dtslubbersen/go-quiz/internal/store"
 	mockStore "github.com/dtslubbersen/go-quiz/internal/store/mock"
 	"github.com/dtslubbersen/go-quiz/pkg/util"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 )
 
 func TestGetQuizzesApi(t *testing.T) {
@@ -83,6 +81,7 @@ func TestGetQuizzesApi(t *testing.T) {
 }
 
 func requireQuizzesResponseBodyMatch(t *testing.T, body *bytes.Buffer, expectedQuizzes []*store.Quiz) {
+	t.Helper()
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 
@@ -192,6 +191,7 @@ func TestGetQuizByIdApi(t *testing.T) {
 }
 
 func requireQuizResponseBodyMatch(t *testing.T, body *bytes.Buffer, expectedQuiz *store.Quiz) {
+	t.Helper()
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 
@@ -222,7 +222,7 @@ func TestPostSubmitAnswersApi(t *testing.T) {
 			name:   "ok",
 			quizId: quiz.Id,
 			preparePayload: func(t *testing.T) map[string]interface{} {
-				return newTestSubmitAnswersPayload(quiz, len(quiz.Questions))
+				return newTestSubmitAnswersPayload(t, quiz, len(quiz.Questions))
 			},
 			setupMocks: func(storage *mockStore.MockStorage) {
 				storage.EXPECT().GetUserById(gomock.Eq(user.Id)).Times(1).Return(user, nil)
@@ -296,7 +296,7 @@ func TestPostSubmitAnswersApi(t *testing.T) {
 			name:   "bad request - misaligned question and answer count",
 			quizId: quiz.Id,
 			preparePayload: func(t *testing.T) map[string]interface{} {
-				return newTestSubmitAnswersPayload(quiz, len(quiz.Questions)-1)
+				return newTestSubmitAnswersPayload(t, quiz, len(quiz.Questions)-1)
 			},
 			setupMocks: func(storage *mockStore.MockStorage) {
 				storage.EXPECT().GetUserById(gomock.Eq(user.Id)).Times(1).Return(user, nil)
@@ -317,7 +317,7 @@ func TestPostSubmitAnswersApi(t *testing.T) {
 			name:   "bad request - quiz already answered",
 			quizId: quiz.Id,
 			preparePayload: func(t *testing.T) map[string]interface{} {
-				return newTestSubmitAnswersPayload(quiz, len(quiz.Questions))
+				return newTestSubmitAnswersPayload(t, quiz, len(quiz.Questions))
 			},
 			setupMocks: func(storage *mockStore.MockStorage) {
 				storage.EXPECT().GetUserById(gomock.Eq(user.Id)).Times(1).Return(user, nil)
@@ -339,7 +339,7 @@ func TestPostSubmitAnswersApi(t *testing.T) {
 			name:   "invalid quiz id",
 			quizId: 0,
 			preparePayload: func(t *testing.T) map[string]interface{} {
-				return newTestSubmitAnswersPayload(quiz, len(quiz.Questions))
+				return newTestSubmitAnswersPayload(t, quiz, len(quiz.Questions))
 			},
 			setupMocks: func(storage *mockStore.MockStorage) {
 				storage.EXPECT().GetUserById(gomock.Eq(user.Id)).Times(1).Return(user, nil)
@@ -380,7 +380,8 @@ func TestPostSubmitAnswersApi(t *testing.T) {
 	}
 }
 
-func newTestSubmitAnswersPayload(quiz *store.Quiz, questionCount int) map[string]interface{} {
+func newTestSubmitAnswersPayload(t *testing.T, quiz *store.Quiz, questionCount int) map[string]interface{} {
+	t.Helper()
 	answers := make([]QuestionAnswerPayload, 0)
 
 	for i := 0; i < questionCount; i++ {
@@ -477,6 +478,7 @@ func TestGetQuizResultsApi(t *testing.T) {
 }
 
 func requireResultResponseBodyMatch(t *testing.T, body *bytes.Buffer, expectedResult *store.Result) {
+	t.Helper()
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 
@@ -491,10 +493,12 @@ func requireResultResponseBodyMatch(t *testing.T, body *bytes.Buffer, expectedRe
 }
 
 func newTestResult(t *testing.T, quiz *store.Quiz) *store.Result {
+	t.Helper()
 	return &store.Result{}
 }
 
 func newTestQuiz(t *testing.T, includeQuestions bool) *store.Quiz {
+	t.Helper()
 	quiz := &store.Quiz{
 		Id:          store.QuizId(util.RandomInt(1, 128)),
 		Title:       util.RandomString(8),
@@ -535,6 +539,7 @@ func newTestQuiz(t *testing.T, includeQuestions bool) *store.Quiz {
 }
 
 func newTestUser(t *testing.T) (*store.User, string) {
+	t.Helper()
 	password := util.RandomString(8)
 	user := &store.User{
 		Id:        store.UserId(util.RandomInt(1, 128)),
@@ -549,18 +554,8 @@ func newTestUser(t *testing.T) (*store.User, string) {
 	return user, password
 }
 
-func newTestClaims(t *testing.T, user *store.User) jwt.Claims {
-	claims := jwt.MapClaims{
-		"aud": "test-aud",
-		"iss": "test-aud",
-		"sub": user.Id,
-		"exp": time.Now().Add(time.Hour).Unix(),
-	}
-
-	return claims
-}
-
 func requireErrorResponseBodyMatch(t *testing.T, body *bytes.Buffer, expectedError error) {
+	t.Helper()
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 
